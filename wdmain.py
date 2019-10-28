@@ -445,6 +445,7 @@ def add_npc_to_db():
 #GENERATE FIGHT ---> BUTTON FUNCTIONS
 
 def gen_fight_char_button_f():
+    global generate_fight_character
     generate_fight_character = tkinter.Tk()
     generate_fight_character.title("Add Character")
 
@@ -456,12 +457,15 @@ def gen_fight_char_button_f():
     c = conn.cursor()
 
     #make the table empty:
-    c.execute("DELETE FROM fighting_char WHERE rowid>-1")
+    c.execute("DELETE FROM fighting_char WHERE rowid > 0")
+    #save and close database
+    conn.commit()
+    conn.close()
 
     #create the listbox of characters:
     global gen_fight_char_listbox
-    gen_fight_char_listbox = tkinter.Listbox(generate_fight_character, height=6)
-    gen_fight_char_listbox.grid(row=2, column=1)
+    gen_fight_char_listbox = tkinter.Listbox(generate_fight_character, height=6, selectbackground="purple")
+    gen_fight_char_listbox.grid(row=3, column=1)
 
     #fill the listbox
     for item in ["Putukas", "Shadow Fury", "Farvizes Sallango", "Ped Ophelia", "Stickee", "Crag Stone"]:
@@ -470,12 +474,29 @@ def gen_fight_char_button_f():
 
 
     #ADD ALL button
-    gen_fight_char_addall_button = tkinter.Button(generate_fight_character, text="ADD ALL", bg="blue", fg="white", command=None)
-    gen_fight_char_addall_button.grid(row=3, column=2)
+    gen_fight_char_addall_button = tkinter.Button(generate_fight_character, text="ADD ALL", bg="blue", fg="white", command=gen_fight_char_add_all_button_f)
+    gen_fight_char_addall_button.grid(row=5, column=1)
     #ADD button
     gen_fight_char_add_button = tkinter.Button(generate_fight_character, text="ADD active", bg="green", fg="black", command=gen_fight_char_add_button_f)
-    gen_fight_char_add_button.grid(row=3, column=1)
+    gen_fight_char_add_button.grid(row=4, column=1)
 
+    #instructions for adding characters
+
+    add_char_instructions = tkinter.Label(generate_fight_character, text="Add characters to the fight one by one, or add all of them in one click. If you fail, just destroy this window and reopen it.", fg="red")
+    add_char_instructions.grid(row=2, column=1)
+
+def gen_fight_char_add_all_button_f():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+    for all_fight in ["Putukas", "Shadow Fury", "Farvizes Sallango", "Ped Ophelia", "Stickee", "Crag Stone"]:
+        c.execute("INSERT OR IGNORE INTO fighting_char (name) VALUES (?)", (all_fight,))
+    # save and close database
+    conn.commit()
+    conn.close()
+
+    adding_all_was_success1 = tkinter.Label(generate_fight_character, text="Adding all from list was success. You can destroy this window.", fg="green")
+    adding_all_was_success1.grid(row=6, column=1)
 
 def gen_fight_char_add_button_f():
     #get the value:
@@ -484,11 +505,13 @@ def gen_fight_char_add_button_f():
     # connect to db:
     conn = sqlite3.connect('dnd.db')
     c = conn.cursor()
-    c.execute("INSERT INTO fighting_char (name) VALUES (?)", (gen_fight_char_value,))
+    c.execute("INSERT OR IGNORE INTO fighting_char (name) VALUES (?)", (gen_fight_char_value,))
     #save and close database
     conn.commit()
     conn.close()
 
+    adding_char_was_success = tkinter.Label(generate_fight_character, text="Adding %s was success." % gen_fight_char_value, fg="green")
+    adding_char_was_success.grid(row=7, column=1)
 
 
 
@@ -513,9 +536,14 @@ def generate_fight_window():
 
     #Buttons for adding:
 
-    gen_fight_char_button = tkinter.Button(generate_fight_win, text="Character", bg="black", fg="yellow", command=gen_fight_char_button_f)
+    gen_fight_char_button = tkinter.Button(generate_fight_win, text="Character", bg="green", fg="white", command=gen_fight_char_button_f)
     gen_fight_char_button.grid(row=3, column=1)
 
+    gen_fight_monster_button = tkinter.Button(generate_fight_win, text="Monster", bg="red", fg="white", command=None)
+    gen_fight_monster_button.grid(row=4, column=1)
+
+    gen_fight_npc_button = tkinter.Button(generate_fight_win, text="NPC", bg="blue", fg="white", command=None)
+    gen_fight_npc_button.grid(row=5, column=1)
 
 
 
