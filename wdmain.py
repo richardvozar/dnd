@@ -444,6 +444,7 @@ def add_npc_to_db():
 
 #GENERATE FIGHT ---> BUTTON FUNCTIONS
 
+#---------ADD CHARACTER BUTTON
 def gen_fight_char_button_f():
     global generate_fight_character
     generate_fight_character = tkinter.Tk()
@@ -485,6 +486,7 @@ def gen_fight_char_button_f():
     add_char_instructions = tkinter.Label(generate_fight_character, text="Add characters to the fight one by one, or add all of them in one click. If you fail, just destroy this window and reopen it.", fg="red")
     add_char_instructions.grid(row=2, column=1)
 
+#function for the "ADD ALL" button in the add character window
 def gen_fight_char_add_all_button_f():
     # connect to db:
     conn = sqlite3.connect('dnd.db')
@@ -498,6 +500,7 @@ def gen_fight_char_add_all_button_f():
     adding_all_was_success1 = tkinter.Label(generate_fight_character, text="Adding all from list was success. You can destroy this window.", fg="green")
     adding_all_was_success1.grid(row=6, column=1)
 
+#function for the "ADD" button in the add character window
 def gen_fight_char_add_button_f():
     #get the value:
     global gen_fight_char_value
@@ -513,6 +516,71 @@ def gen_fight_char_add_button_f():
     adding_char_was_success = tkinter.Label(generate_fight_character, text="Adding %s was success." % gen_fight_char_value, fg="green")
     adding_char_was_success.grid(row=7, column=1)
 
+#---------ADD MONSTER BUTTON
+def gen_fight_monster_button_f():
+    generate_fight_monster = tkinter.Tk()
+    generate_fight_monster.title("Add monster to the fight")
+    generate_fight_monster.geometry("1600x900")
+
+    gen_fight_monster_search = tkinter.Label(generate_fight_monster, text="Search for monsters!")
+    gen_fight_monster_search.grid(row=1, column=1)
+
+    #searching by name:
+    gen_fight_monster_search_name = tkinter.Label(generate_fight_monster, text="Name")
+    gen_fight_monster_search_name.grid(row=2, column=1)
+    global gen_fight_monster_search_name_entry
+    gen_fight_monster_search_name_entry = tkinter.Entry(generate_fight_monster)
+    gen_fight_monster_search_name_entry.grid(row=2, column=2)
+    gen_fight_monster_search_name_button = tkinter.Button(generate_fight_monster, text="Search by name", command=gen_fight_search_name_button_f)
+    gen_fight_monster_search_name_button.grid(row=2, column=3)
+
+    #empty row:
+    gen_fight_monster_empty = tkinter.Label(generate_fight_monster)
+    gen_fight_monster_empty.grid(row=3, column=1)
+
+    #searching by challange rating:
+    global gen_fight_monster_search_cr_scale
+    gen_fight_monster_search_cr = tkinter.Label(generate_fight_monster, text="Challange Rating")
+    gen_fight_monster_search_cr.grid(row=4, column=1)
+    gen_fight_monster_search_cr_scale = tkinter.Scale(generate_fight_monster, from_=1, to=30, tickinterval=1, orient=tkinter.HORIZONTAL, length=550)
+    gen_fight_monster_search_cr_scale.grid(row=4, column=2, sticky=tkinter.W)
+    gen_fight_monster_search_cr_button = tkinter.Button(generate_fight_monster, text="Search by CR", command=gen_fight_search_cr_button_f)
+    gen_fight_monster_search_cr_button.grid(row=4, column=3)
+
+
+    #searching by creature type
+    gen_fight_monster_search_ct = tkinter.Label(generate_fight_monster, text="Creature Type")
+    gen_fight_monster_search_ct.grid(row=6, column=1)
+    global gen_fight_monster_search_ct_listbox
+    gen_fight_monster_search_ct_listbox = tkinter.Listbox(generate_fight_monster)
+    gen_fight_monster_search_ct_listbox.grid(row=6, column=2)
+    gen_fight_monster_search_ct_button = tkinter.Button(generate_fight_monster, text="Search by CT", command=gen_fight_search_ct_button_f)
+    gen_fight_monster_search_ct_button.grid(row=6, column=3)
+    for item in ["Aberration", "Animal", "Celestial", "Construct", "Dragon",
+                 "Elemental", "Fey", "Fiend", "Giant", "Humanoid", "Magical Beast",
+                 "Monstrous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"]:
+        gen_fight_monster_search_ct_listbox.insert(tkinter.END, item)
+
+#function for the "search by name" button
+def gen_fight_search_name_button_f():
+    global gen_fight_search_name_value
+    gen_fight_search_name_value = gen_fight_monster_search_name_entry.get()
+
+
+
+#function for the "search by challange rating" button
+def gen_fight_search_cr_button_f():
+    global gen_fight_monster_search_cr_value
+    gen_fight_monster_search_cr_value = gen_fight_monster_search_cr_scale.get()
+    #connect database and somehow search the fucking list
+
+
+
+
+#function for the "search by creature type" button
+def gen_fight_search_ct_button_f():
+    global gen_fight_monster_search_ct_value
+    gen_fight_monster_search_ct_value = gen_fight_monster_search_ct_listbox.get(tkinter.ACTIVE)
 
 
 
@@ -539,12 +607,22 @@ def generate_fight_window():
     gen_fight_char_button = tkinter.Button(generate_fight_win, text="Character", bg="green", fg="white", command=gen_fight_char_button_f)
     gen_fight_char_button.grid(row=3, column=1)
 
-    gen_fight_monster_button = tkinter.Button(generate_fight_win, text="Monster", bg="red", fg="white", command=None)
+    gen_fight_monster_button = tkinter.Button(generate_fight_win, text="Monster", bg="red", fg="white", command=gen_fight_monster_button_f)
     gen_fight_monster_button.grid(row=4, column=1)
 
     gen_fight_npc_button = tkinter.Button(generate_fight_win, text="NPC", bg="blue", fg="white", command=None)
     gen_fight_npc_button.grid(row=5, column=1)
 
+    gen_fight_show_added_button = tkinter.Button(generate_fight_win, text="Show added", bg="white", fg="black", command=None)
+    gen_fight_show_added_button.grid(row=6, column=1)
+
+    gen_fight_continue_button = tkinter.Button(generate_fight_win, text="Continue", command=None)
+    gen_fight_continue_button.grid(row=999, column=999)
+
+    #some space column between buttons
+
+    gen_fight_empty1 = tkinter.Label(generate_fight_win)
+    gen_fight_empty1.grid(row=7, column=1)
 
 
 
