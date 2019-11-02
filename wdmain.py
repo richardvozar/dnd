@@ -563,6 +563,7 @@ def gen_fight_monster_button_f():
 
 #function for the "search by name" button
 def gen_fight_search_name_button_f():
+
     global gen_fight_search_name_value
     gen_fight_search_name_value = gen_fight_monster_search_name_entry.get()
 
@@ -582,12 +583,42 @@ def gen_fight_search_ct_button_f():
     global gen_fight_monster_search_ct_value
     gen_fight_monster_search_ct_value = gen_fight_monster_search_ct_listbox.get(tkinter.ACTIVE)
 
+def gen_fight_show_added_f():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM fighting_char")
+    fake_list = []
+    global real_list
+    real_list = []
+    fighting_chars = c.fetchall()
+    for item in fighting_chars:
+        fake_list.append(item)
+    if ("Putukas",) in fake_list:
+        real_list.append("Putukas")
+    if ("Shadow Fury",) in fake_list:
+        real_list.append("Shadow Fury")
+    if ("Farvizes Sallango",) in fake_list:
+        real_list.append("Farvizes Sallango")
+    if ("Ped Ophelia",) in fake_list:
+        real_list.append("Ped Ophelia")
+    if ("Stickee",) in fake_list:
+        real_list.append("Stickee")
+    if ("Crag Stone",) in fake_list:
+        real_list.append("Crag Stone")
+    #this belows prints out the added characters when SHOW ADD button is clicked
+    for i in range(len(real_list)):
+        tkinter.Label(generate_fight_win, text="ADDED:", bg="black", fg="white").grid(row=1, column=2)
+        tkinter.Label(generate_fight_win, text="Characters:", fg="blue").grid(row=1, column=3)
+        gen_fight_show_added_chars = tkinter.Label(generate_fight_win, text="%s" % (real_list[i]))
+        gen_fight_show_added_chars.grid(row=i+2, column=3)
 
 
 
 #MAIN WINDOW
 def generate_fight_window():
     # window stats
+    global generate_fight_win
     generate_fight_win = tkinter.Tk()
     generate_fight_win.title("Generate Fight")
     generate_fight_win.geometry("1600x900")
@@ -613,7 +644,7 @@ def generate_fight_window():
     gen_fight_npc_button = tkinter.Button(generate_fight_win, text="NPC", bg="blue", fg="white", command=None)
     gen_fight_npc_button.grid(row=5, column=1)
 
-    gen_fight_show_added_button = tkinter.Button(generate_fight_win, text="Show added", bg="white", fg="black", command=None)
+    gen_fight_show_added_button = tkinter.Button(generate_fight_win, text="Show added", bg="white", fg="black", command=gen_fight_show_added_f)
     gen_fight_show_added_button.grid(row=6, column=1)
 
     gen_fight_continue_button = tkinter.Button(generate_fight_win, text="Continue", command=None)
