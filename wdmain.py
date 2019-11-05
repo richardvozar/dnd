@@ -515,7 +515,7 @@ def gen_fight_char_add_button_f():
 
     adding_char_was_success = tkinter.Label(generate_fight_character, text="Adding %s was success." % gen_fight_char_value, fg="green")
     adding_char_was_success.grid(row=7, column=1)
-
+# faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasz
 #---------ADD MONSTER BUTTON
 def gen_fight_monster_button_f():
     generate_fight_monster = tkinter.Tk()
@@ -524,6 +524,13 @@ def gen_fight_monster_button_f():
 
     gen_fight_monster_search = tkinter.Label(generate_fight_monster, text="Search for monsters!")
     gen_fight_monster_search.grid(row=1, column=1)
+
+    # clearing the database
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM fighting_mon WHERE rowid > 0")
+    conn.commit()
+    conn.close()
 
     #searching by name:
     gen_fight_monster_search_name = tkinter.Label(generate_fight_monster, text="Name")
@@ -552,7 +559,7 @@ def gen_fight_monster_button_f():
     gen_fight_monster_search_ct = tkinter.Label(generate_fight_monster, text="Creature Type")
     gen_fight_monster_search_ct.grid(row=6, column=1)
     global gen_fight_monster_search_ct_listbox
-    gen_fight_monster_search_ct_listbox = tkinter.Listbox(generate_fight_monster)
+    gen_fight_monster_search_ct_listbox = tkinter.Listbox(generate_fight_monster, height=17)
     gen_fight_monster_search_ct_listbox.grid(row=6, column=2)
     gen_fight_monster_search_ct_button = tkinter.Button(generate_fight_monster, text="Search by CT", command=gen_fight_search_ct_button_f)
     gen_fight_monster_search_ct_button.grid(row=6, column=3)
@@ -567,6 +574,50 @@ def gen_fight_search_name_button_f():
     global gen_fight_search_name_value
     gen_fight_search_name_value = gen_fight_monster_search_name_entry.get()
 
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM monsters WHERE name LIKE (? || '%')", (gen_fight_search_name_value,))
+
+
+    monsters_name_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        monsters_name_list.append(to_the_list[0])
+
+    global search_mon_byname
+    search_mon_byname = tkinter.Tk()
+    search_mon_byname.title("Search Monster by NAME")
+    search_mon_byname.geometry("400x400")
+
+    global searched_monsters_name
+    searched_monsters_name = tkinter.Listbox(search_mon_byname, height=len(monsters_name_list))
+    searched_monsters_name.grid(row=1, column=1)
+    for item in monsters_name_list:
+        searched_monsters_name.insert(tkinter.END, item)
+
+    searched_monsters_add_button = tkinter.Button(search_mon_byname, text="ADD", command=add_monster_to_fight_by_name)
+    searched_monsters_add_button.grid(row=2, column=2)
+
+
+# function to the ADD button in search monsters by name window
+def add_monster_to_fight_by_name():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_monster_todb = searched_monsters_name.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_mon (name) VALUES (?)", (searched_monster_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_mon_byname, text="Adding %s to the fight was success." % searched_monster_todb, fg="blue").grid(row=4, column=1)
+
+
 
 
 #function for the "search by challange rating" button
@@ -574,16 +625,319 @@ def gen_fight_search_cr_button_f():
     global gen_fight_monster_search_cr_value
     gen_fight_monster_search_cr_value = gen_fight_monster_search_cr_scale.get()
     #connect database and somehow search the fucking list
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM monsters WHERE challenge_rating=?", (gen_fight_monster_search_cr_value,))
+
+    monsters_cr_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        monsters_cr_list.append(to_the_list[0])
+
+    global search_mon_bycr
+    search_mon_bycr = tkinter.Tk()
+    search_mon_bycr.title("Search Monster by Challange Rating")
+    search_mon_bycr.geometry("400x400")
+
+    global searched_monsters_cr
+    searched_monsters_cr = tkinter.Listbox(search_mon_bycr, height=len(monsters_cr_list))
+    searched_monsters_cr.grid(row=1, column=1)
+    for item in monsters_cr_list:
+        searched_monsters_cr.insert(tkinter.END, item)
+
+    searched_monsters_add_button = tkinter.Button(search_mon_bycr, text="ADD", command=add_monster_to_fight_by_cr)
+    searched_monsters_add_button.grid(row=2, column=2)
 
 
+# function to the ADD button in monsters searching by challange rating
+def add_monster_to_fight_by_cr():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_monster_todb = searched_monsters_cr.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_mon (name) VALUES (?)", (searched_monster_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_mon_bycr, text= "Adding %s to the fight was success." %searched_monster_todb, fg="blue").grid(row=4, column=1)
 
 
-#function for the "search by creature type" button
+# function for the "search by creature type" button
 def gen_fight_search_ct_button_f():
     global gen_fight_monster_search_ct_value
     gen_fight_monster_search_ct_value = gen_fight_monster_search_ct_listbox.get(tkinter.ACTIVE)
 
+
+    # connect database and somehow search the fucking list
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM monsters WHERE creature_type=?", (gen_fight_monster_search_ct_value,))
+
+    monsters_ct_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        monsters_ct_list.append(to_the_list[0])
+
+    global search_mon_byct
+    search_mon_byct = tkinter.Tk()
+    search_mon_byct.title("Search Monster by Challange Rating")
+    search_mon_byct.geometry("400x400")
+
+    global searched_monsters_ct
+    searched_monsters_ct = tkinter.Listbox(search_mon_byct, height=len(monsters_ct_list))
+    searched_monsters_ct.grid(row=1, column=1)
+    for item in monsters_ct_list:
+        searched_monsters_ct.insert(tkinter.END, item)
+
+    searched_monsters_add_button = tkinter.Button(search_mon_byct, text="ADD", command=add_monster_to_fight_by_ct)
+    searched_monsters_add_button.grid(row=2, column=2)
+
+
+def add_monster_to_fight_by_ct():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_monster_todb = searched_monsters_ct.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_mon (name) VALUES (?)", (searched_monster_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_mon_byct, text="Adding %s to the fight was success." % searched_monster_todb, fg="blue").grid(row=4, column=1)
+
+# faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasz
+
+# faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasz
+#---------ADD NPC BUTTON
+def gen_fight_npc_button_f():
+    generate_fight_npc = tkinter.Tk()
+    generate_fight_npc.title("Add NPC to the fight")
+    generate_fight_npc.geometry("1600x900")
+
+    gen_fight_npc_search = tkinter.Label(generate_fight_npc, text="Search for NPC!")
+    gen_fight_npc_search.grid(row=1, column=1)
+
+    # clearing the database
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM fighting_npc WHERE rowid > 0")
+    conn.commit()
+    conn.close()
+
+    #searching by name:
+    gen_fight_npc_search_name = tkinter.Label(generate_fight_npc, text="Name")
+    gen_fight_npc_search_name.grid(row=2, column=1)
+    global gen_fight_npc_search_name_entry
+    gen_fight_npc_search_name_entry = tkinter.Entry(generate_fight_npc)
+    gen_fight_npc_search_name_entry.grid(row=2, column=2)
+    gen_fight_npc_search_name_button = tkinter.Button(generate_fight_npc, text="Search by name", command=gen_fight_search_name_button_f_npc)
+    gen_fight_npc_search_name_button.grid(row=2, column=3)
+
+    #empty row:
+    gen_fight_npc_empty = tkinter.Label(generate_fight_npc)
+    gen_fight_npc_empty.grid(row=3, column=1)
+
+    #searching by challange rating:
+    global gen_fight_npc_search_cr_scale
+    gen_fight_npc_search_cr = tkinter.Label(generate_fight_npc, text="Challange Rating")
+    gen_fight_npc_search_cr.grid(row=4, column=1)
+    gen_fight_npc_search_cr_scale = tkinter.Scale(generate_fight_npc, from_=1, to=30, tickinterval=1, orient=tkinter.HORIZONTAL, length=550)
+    gen_fight_npc_search_cr_scale.grid(row=4, column=2, sticky=tkinter.W)
+    gen_fight_npc_search_cr_button = tkinter.Button(generate_fight_npc, text="Search by CR", command=gen_fight_search_cr_button_f_npc)
+    gen_fight_npc_search_cr_button.grid(row=4, column=3)
+
+
+    #searching by creature type
+    gen_fight_npc_search_ct = tkinter.Label(generate_fight_npc, text="Creature Type")
+    gen_fight_npc_search_ct.grid(row=6, column=1)
+    global gen_fight_npc_search_ct_listbox
+    gen_fight_npc_search_ct_listbox = tkinter.Listbox(generate_fight_npc, height=17)
+    gen_fight_npc_search_ct_listbox.grid(row=6, column=2)
+    gen_fight_npc_search_ct_button = tkinter.Button(generate_fight_npc, text="Search by CT", command=gen_fight_search_ct_button_f_npc)
+    gen_fight_npc_search_ct_button.grid(row=6, column=3)
+    for item in ["Aberration", "Animal", "Celestial", "Construct", "Dragon",
+                 "Elemental", "Fey", "Fiend", "Giant", "Humanoid", "Magical Beast",
+                 "Monstrous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"]:
+        gen_fight_npc_search_ct_listbox.insert(tkinter.END, item)
+
+#function for the "search by name" button
+def gen_fight_search_name_button_f_npc():
+
+    global gen_fight_search_name_value
+    gen_fight_search_name_value = gen_fight_npc_search_name_entry.get()
+
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM npc WHERE name LIKE (? || '%')", (gen_fight_search_name_value,))
+
+
+    npc_name_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        npc_name_list.append(to_the_list[0])
+
+    global search_npc_byname
+    search_npc_byname = tkinter.Tk()
+    search_npc_byname.title("Search NPC by NAME")
+    search_npc_byname.geometry("400x400")
+
+    global searched_npc_name
+    searched_npc_name = tkinter.Listbox(search_npc_byname, height=len(npc_name_list))
+    searched_npc_name.grid(row=1, column=1)
+    for item in npc_name_list:
+        searched_npc_name.insert(tkinter.END, item)
+
+    searched_npc_add_button = tkinter.Button(search_npc_byname, text="ADD", command=add_npc_to_fight_by_name)
+    searched_npc_add_button.grid(row=2, column=2)
+
+
+# function to the ADD button in search monsters by name window
+def add_npc_to_fight_by_name():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_npc_todb = searched_npc_name.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_npc (name) VALUES (?)", (searched_npc_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_npc_byname, text="Adding %s to the fight was success." % searched_npc_todb, fg="blue").grid(row=4, column=1)
+
+
+
+
+#function for the "search by challange rating" button
+def gen_fight_search_cr_button_f_npc():
+    global gen_fight_npc_search_cr_value
+    gen_fight_npc_search_cr_value = gen_fight_npc_search_cr_scale.get()
+    #connect database and somehow search the fucking list
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM npc WHERE challenge_rating=?", (gen_fight_npc_search_cr_value,))
+
+    npc_cr_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        npc_cr_list.append(to_the_list[0])
+
+    global search_npc_bycr
+    search_npc_bycr = tkinter.Tk()
+    search_npc_bycr.title("Search NPC by Challange Rating")
+    search_npc_bycr.geometry("400x400")
+
+    global searched_npc_cr
+    searched_npc_cr = tkinter.Listbox(search_npc_bycr, height=len(npc_cr_list))
+    searched_npc_cr.grid(row=1, column=1)
+    for item in npc_cr_list:
+        searched_npc_cr.insert(tkinter.END, item)
+
+    searched_npc_add_button = tkinter.Button(search_npc_bycr, text="ADD", command=add_npc_to_fight_by_cr)
+    searched_npc_add_button.grid(row=2, column=2)
+
+
+# function to the ADD button in monsters searching by challange rating
+def add_npc_to_fight_by_cr():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_npc_todb = searched_npc_cr.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_npc (name) VALUES (?)", (searched_npc_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_npc_bycr, text= "Adding %s to the fight was success." %searched_npc_todb, fg="blue").grid(row=4, column=1)
+
+
+# function for the "search by creature type" button
+def gen_fight_search_ct_button_f_npc():
+    global gen_fight_npc_search_ct_value
+    gen_fight_npc_search_ct_value = gen_fight_npc_search_ct_listbox.get(tkinter.ACTIVE)
+
+
+    # connect database and somehow search the fucking list
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM npc WHERE creature_type=?", (gen_fight_npc_search_ct_value,))
+
+    npc_ct_list = []
+    searched_names = c.fetchall()
+    for to_the_list in searched_names:
+        npc_ct_list.append(to_the_list[0])
+
+    global search_npc_byct
+    search_npc_byct = tkinter.Tk()
+    search_npc_byct.title("Search NPC by Challange Rating")
+    search_npc_byct.geometry("400x400")
+
+    global searched_npc_ct
+    searched_npc_ct = tkinter.Listbox(search_npc_byct, height=len(npc_ct_list))
+    searched_npc_ct.grid(row=1, column=1)
+    for item in npc_ct_list:
+        searched_npc_ct.insert(tkinter.END, item)
+
+    searched_npc_add_button = tkinter.Button(search_npc_byct, text="ADD", command=add_npc_to_fight_by_ct)
+    searched_npc_add_button.grid(row=2, column=2)
+
+
+def add_npc_to_fight_by_ct():
+    # connect to db:
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    searched_npc_todb = searched_npc_ct.get(tkinter.ACTIVE)
+
+    c.execute("INSERT INTO fighting_npc (name) VALUES (?)", (searched_npc_todb,))
+
+    # save and close db:
+    conn.commit()
+    conn.close()
+
+    tkinter.Label(search_npc_byct, text="Adding %s to the fight was success." % searched_npc_todb, fg="blue").grid(row=4, column=1)
+
+# faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasz
+
+
+
+
+
+
+
+
+
+
+
+
+
+# function for the SHOW ADDED button
 def gen_fight_show_added_f():
+    #clean the shit
+    for w in range(15):
+        tkinter.Label(generate_fight_win, text=" "*40).grid(row=w+1, column=3)
+        tkinter.Label(generate_fight_win, text=" "*40).grid(row=w+1, column=4)
+        tkinter.Label(generate_fight_win, text=" "*40).grid(row=w+1, column=5)
+
+
     # connect to db:
     conn = sqlite3.connect('dnd.db')
     c = conn.cursor()
@@ -610,8 +964,29 @@ def gen_fight_show_added_f():
     for i in range(len(real_list)):
         tkinter.Label(generate_fight_win, text="ADDED:", bg="black", fg="white").grid(row=1, column=2)
         tkinter.Label(generate_fight_win, text="Characters:", fg="blue").grid(row=1, column=3)
-        gen_fight_show_added_chars = tkinter.Label(generate_fight_win, text="%s" % (real_list[i]))
+        gen_fight_show_added_chars = tkinter.Label(generate_fight_win, text="{}".format(real_list[i]))
         gen_fight_show_added_chars.grid(row=i+2, column=3)
+
+
+    monsters_fighting = c.execute("SELECT * FROM fighting_mon")
+    real_list2=[]
+    for names in monsters_fighting:
+        real_list2.append(names)
+
+    for j in range(len(real_list2)):
+        tkinter.Label(generate_fight_win, text="Monsters:", fg="blue").grid(row=1, column=4)
+        print_the_monster = tkinter.Label(generate_fight_win, text="%s" % (real_list2[j]))
+        print_the_monster.grid(row=j+2, column=4)
+
+    npc_fighting = c.execute("SELECT * FROM fighting_npc")
+    real_list3 = []
+    for names_npc in npc_fighting:
+        real_list3.append(names_npc)
+
+    for k in range(len(real_list3)):
+        tkinter.Label(generate_fight_win, text="NPC:", fg="blue").grid(row=1, column=5)
+        print_the_npc = tkinter.Label(generate_fight_win, text="%s" % (real_list3[k]))
+        print_the_npc.grid(row=k + 2, column=5)
 
 
 
@@ -641,13 +1016,13 @@ def generate_fight_window():
     gen_fight_monster_button = tkinter.Button(generate_fight_win, text="Monster", bg="red", fg="white", command=gen_fight_monster_button_f)
     gen_fight_monster_button.grid(row=4, column=1)
 
-    gen_fight_npc_button = tkinter.Button(generate_fight_win, text="NPC", bg="blue", fg="white", command=None)
+    gen_fight_npc_button = tkinter.Button(generate_fight_win, text="NPC", bg="blue", fg="white", command=gen_fight_npc_button_f)
     gen_fight_npc_button.grid(row=5, column=1)
 
     gen_fight_show_added_button = tkinter.Button(generate_fight_win, text="Show added", bg="white", fg="black", command=gen_fight_show_added_f)
     gen_fight_show_added_button.grid(row=6, column=1)
 
-    gen_fight_continue_button = tkinter.Button(generate_fight_win, text="Continue", command=None)
+    gen_fight_continue_button = tkinter.Button(generate_fight_win, text="Continue", command=continute_to_initiative)
     gen_fight_continue_button.grid(row=999, column=999)
 
     #some space column between buttons
@@ -657,17 +1032,47 @@ def generate_fight_window():
 
 
 
+# "CONTINUE" BUTTON FUNCTION to the initiative
 
+def continute_to_initiative():
 
+    initiative_window = tkinter.Tk()
+    initiative_window.title("Giving Initiatives")
+    initiative_window.geometry("300x900")
 
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
 
+    s = c.execute("SELECT name FROM fighting_char")
+    fighting_character_list = []
+    for row in s:
+        fighting_character_list.append(row)
 
+    tkinter.Label(initiative_window, text="Initiatives:", fg="blue").grid(row=1, column=2)
+    for i in range(len(fighting_character_list)):
+        tkinter.Label(initiative_window, text="%s" % (fighting_character_list[i])).grid(row=(i+2), column=1)
 
+    char_dict = [[],
+                 []]
 
+    for j in range(len(fighting_character_list)):
+        char_dict[0].append(fighting_character_list[j])
+        char_dict[1].append("tkinter.Entry(initiative_window).grid(row=(i+1)*2, column=2)")
 
+    for k in range(5):
+        globals()['cat_%s' % k] = k
 
+    print(cat_1, cat_1, cat_2, cat_3, cat_4)
 
-
+    # ezt itt folul muszaj folytatni ez igy tud mukodni!!!!!!
+    #ez a globals() cucc olyat tud, hogy egy loopon belul tobb kulonbozo valtozot hozol letre...
+    # ez itt nekunk azert jo, mert igy megcsinalhatjuk a kezdemenyezos ablakot
+    # egy oszlop karakter, mellette a tkinter.Entry cuccos, es az entrynek hozunk letre valtozot ezzel a globals() funkcioval
+    # pl:
+    #for i in range(len(fighting_character_list)):
+    #    tkinter.Label(initiative_window, text="%s" % (fighting_character_list[i])).grid(row=i+1, column=1)
+    #    globals()['char_init_entry_%s' % i+1] = tkinter.Entry(initiative_window).grid(row=(i+2) , column=2)
+    #    globals()['char_init_entry_get_%s' % i+1] = globals()['char_init_entry_%s' % i+1].get()
 
 
 
