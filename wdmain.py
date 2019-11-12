@@ -1036,43 +1036,182 @@ def generate_fight_window():
 
 def continute_to_initiative():
 
+    global initiative_window
     initiative_window = tkinter.Tk()
     initiative_window.title("Giving Initiatives")
     initiative_window.geometry("300x900")
 
+    #clearing
+    for clear in range(2):
+        for clearing in range(100):
+            tkinter.Label(initiative_window, text=" "*30).grid(row=clearing+1, column=clear+1)
+
+
     conn = sqlite3.connect('dnd.db')
     c = conn.cursor()
 
-    s = c.execute("SELECT name FROM fighting_char")
+
+    select_char = c.execute("SELECT name FROM fighting_char")
+    global fighting_character_list
     fighting_character_list = []
-    for row in s:
+    for row in select_char:
         fighting_character_list.append(row)
 
-    tkinter.Label(initiative_window, text="Initiatives:", fg="blue").grid(row=1, column=2)
-    for i in range(len(fighting_character_list)):
-        tkinter.Label(initiative_window, text="%s" % (fighting_character_list[i])).grid(row=(i+2), column=1)
+    label1 = tkinter.Label(initiative_window, text="Characters:", fg="green")
+    label1.grid(row=1, column=1)
+    label2 = tkinter.Label(initiative_window, text="Initiatives:", fg="blue")
+    label2.grid(row=1, column=2)
 
-    char_dict = [[],
-                 []]
-
-    for j in range(len(fighting_character_list)):
-        char_dict[0].append(fighting_character_list[j])
-        char_dict[1].append("tkinter.Entry(initiative_window).grid(row=(i+1)*2, column=2)")
-
-    for k in range(5):
-        globals()['cat_%s' % k] = k
-
-    print(cat_1, cat_1, cat_2, cat_3, cat_4)
+    # START BUTTON
+    tkinter.Button(initiative_window, text="FASZ", command=initiative_start_f).grid(row=5, column=5)
 
     # ezt itt folul muszaj folytatni ez igy tud mukodni!!!!!!
-    #ez a globals() cucc olyat tud, hogy egy loopon belul tobb kulonbozo valtozot hozol letre...
+    # ez a globals() cucc olyat tud, hogy egy loopon belul tobb kulonbozo valtozot hozol letre...
     # ez itt nekunk azert jo, mert igy megcsinalhatjuk a kezdemenyezos ablakot
-    # egy oszlop karakter, mellette a tkinter.Entry cuccos, es az entrynek hozunk letre valtozot ezzel a globals() funkcioval
+    # egy oszlop karakter, mellette a tkinter.Entry cuccos,
+    # es az entrynek hozunk letre valtozot ezzel a globals() funkcioval
     # pl:
-    #for i in range(len(fighting_character_list)):
-    #    tkinter.Label(initiative_window, text="%s" % (fighting_character_list[i])).grid(row=i+1, column=1)
-    #    globals()['char_init_entry_%s' % i+1] = tkinter.Entry(initiative_window).grid(row=(i+2) , column=2)
-    #    globals()['char_init_entry_get_%s' % i+1] = globals()['char_init_entry_%s' % i+1].get()
+
+    for i in range(len(fighting_character_list)):
+        tkinter.Label(initiative_window, text="%s" % (fighting_character_list[i])).grid(row=i+2, column=1)
+        globals()['char_init_entry_%s' % str(i+1)] = tkinter.Entry(initiative_window, width=4)
+        globals()['char_init_entry_%s' % str(i+1)].grid(row=i+2, column=2)
+
+    select_mon = c.execute("SELECT name FROM fighting_mon")
+    global fighting_monster_list
+    fighting_monster_list = []
+    for row2 in select_mon:
+        fighting_monster_list.append(row2)
+
+    label3 = tkinter.Label(initiative_window, text="Monsters:", fg="red")
+    label3.grid(row=len(fighting_character_list)+2, column=1)
+    label4 = tkinter.Label(initiative_window, text="Initiatives:", fg="blue")
+    label4.grid(row=len(fighting_character_list)+2, column=2)
+
+    select_npc = c.execute("SELECT name FROM fighting_npc")
+    global fighting_npc_list
+    fighting_npc_list = []
+    for row3 in select_npc:
+        fighting_npc_list.append(row3)
+
+    label5 = tkinter.Label(initiative_window, text="NPC:", fg="purple")
+    label5.grid(row=len(fighting_character_list) + len(fighting_monster_list) + 3, column=1)
+    label6 = tkinter.Label(initiative_window, text="Initiatives:", fg="blue")
+    label6.grid(row=len(fighting_character_list) + len(fighting_monster_list) + 3, column=2)
+
+
+
+    # printing out the monster's names
+    for f in range(len(fighting_monster_list)):
+        tkinter.Label(initiative_window, text="%s" % (fighting_monster_list[f])).grid(row=(len(fighting_character_list)+f+3), column=1)
+    # printing out the entries for the monsters initiatives and make variables for them
+    for g in range(len(fighting_monster_list)):
+        globals()['mon_init_entry_%s' % str(g+1)] = tkinter.Entry(initiative_window, width=4)
+        globals()['mon_init_entry_%s' % str(g+1)].grid(row=(len(fighting_character_list)+g+3), column=2)
+
+    # printing out the npc's names
+    for a in range(len(fighting_npc_list)):
+        tkinter.Label(initiative_window, text="%s" % (fighting_npc_list[a])).grid(row=(len(fighting_character_list) + len(fighting_monster_list) + a + 4), column=1)
+    # printing out the entries for the npc initiatives and make variables for them
+    for b in range(len(fighting_npc_list)):
+        globals()['npc_init_entry_%s' % str(b + 1)] = tkinter.Entry(initiative_window, width=4)
+        globals()['npc_init_entry_%s' % str(b + 1)].grid(row=(len(fighting_character_list) + len(fighting_monster_list) + b + 4), column=2)
+
+
+def initiative_start_f():
+
+    # for characters
+    character_list = []
+    character_initiatives = []
+    for j in fighting_character_list:
+        character_list.append(j)
+    for i in range(len(fighting_character_list)):
+        character_initiatives.append(globals()['char_init_entry_%s' % str(i + 1)].get())
+    #testing that this shit works
+    print("Chars:")
+    for k in range(len(character_list)):
+        print(str(character_list[k]) + ": " + str(character_initiatives[k]))
+
+    print("Character initiatives: "+str(character_initiatives))
+    character_initiatives = list(map(int, character_initiatives))
+    print("Inted character inits: "+ str(character_initiatives))
+
+
+
+    # for monsters
+    monster_list = []
+    monster_initiatives = []
+    for l in fighting_monster_list:
+        monster_list.append(l)
+    for m in range(len(fighting_monster_list)):
+        monster_initiatives.append(globals()['mon_init_entry_%s' % str(m + 1)].get())
+    # testing that this shit works
+    print("Monsters:")
+    for n in range(len(monster_list)):
+        print(str(monster_list[n]) + ": " + str(monster_initiatives[n]))
+
+    print("Monster initiatives: "+str(monster_initiatives))
+    monster_initiatives = list(map(int, monster_initiatives))
+    print("Inted monster initiatives: "+str(monster_initiatives))
+
+    # for npc
+    npc_list = []
+    npc_initiatives = []
+    for e in fighting_npc_list:
+        npc_list.append(e)
+    for f in range(len(fighting_npc_list)):
+        npc_initiatives.append(globals()['npc_init_entry_%s' % str(f + 1)].get())
+    # testing that this shit works
+    print("NPC:")
+    for g in range(len(npc_list)):
+        print(str(npc_list[g]) + ": " + str(npc_initiatives[g]))
+
+    print("NPC initiatives: "+str(npc_initiatives))
+    npc_initiatives = list(map(int, npc_initiatives))
+    print("Inted NPC initiatives: "+str(npc_initiatives))
+
+    # make the initiatives sorted and connecting them to their names
+
+    # make the names in pair with initiative numbers in a list:
+    global paired_initiatives
+    paired_initiatives = []
+
+    for aa, ab in zip(character_list, character_initiatives):
+        paired_initiatives.append([aa, ab])
+
+    for ac, ad in zip(monster_list, monster_initiatives):
+        paired_initiatives.append([ac, ad])
+
+    for ae, af in zip(npc_list, npc_initiatives):
+        paired_initiatives.append([ae, af])
+
+    # function for taking the second element of the lists
+    def takeSecond(element):
+        return element[1]
+    print("unsorted: " + str(paired_initiatives))
+    paired_initiatives.sort(key=takeSecond, reverse=True)
+    print("sorted: " + str(paired_initiatives))
+
+    # destroy all the windows (except the main window)
+    initiative_window.destroy()
+    generate_fight_win.destroy()
+
+    start_the_fight()
+
+def start_the_fight():
+    print("elkezdodott")
+
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("FIIIIIIIIGHTT!!!")
+    started_fight_window.geometry("1600x900")
+
+    tkinter.Label(started_fight_window, text="Names").grid(row=1, column=1)
+    tkinter.Label(started_fight_window, text="Initiatives").grid(row=1, column=2)
+    tkinter.Label(started_fight_window, text=paired_initiatives[0][0]).grid(row=2, column=1)
+    tkinter.Label(started_fight_window, text=paired_initiatives[0][1]).grid(row=2, column=2)
+
+
+
 
 
 
