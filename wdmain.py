@@ -1039,7 +1039,7 @@ def continute_to_initiative():
     global initiative_window
     initiative_window = tkinter.Tk()
     initiative_window.title("Giving Initiatives")
-    initiative_window.geometry("300x900")
+    initiative_window.geometry("300x900+500+0")
 
     #clearing
     for clear in range(2):
@@ -1192,6 +1192,9 @@ def initiative_start_f():
     paired_initiatives.sort(key=takeSecond, reverse=True)
     print("sorted: " + str(paired_initiatives))
 
+    global len_paired_inits
+    len_paired_inits = len(paired_initiatives)
+
     # destroy all the windows (except the main window)
     initiative_window.destroy()
     generate_fight_win.destroy()
@@ -1200,15 +1203,81 @@ def initiative_start_f():
 
 def start_the_fight():
     print("elkezdodott")
-
+    global started_fight_window
     started_fight_window = tkinter.Tk()
     started_fight_window.title("FIIIIIIIIGHTT!!!")
-    started_fight_window.geometry("1600x900")
+    started_fight_window.geometry("1350x900+250+0")
 
-    tkinter.Label(started_fight_window, text="Names").grid(row=1, column=1)
-    tkinter.Label(started_fight_window, text="Initiatives").grid(row=1, column=2)
-    tkinter.Label(started_fight_window, text=paired_initiatives[0][0]).grid(row=2, column=1)
-    tkinter.Label(started_fight_window, text=paired_initiatives[0][1]).grid(row=2, column=2)
+    # --------------------FOR THE INITIATIVE WINDOW----------------------
+
+    global started_init_window
+    started_init_window = tkinter.Tk()
+    started_init_window.title("Initiative")
+    started_init_window.geometry("250x900+0+0")
+
+
+    tkinter.Label(started_init_window, text=" " * 5).grid(row=2, column=1)
+
+    tkinter.Label(started_init_window, text="Names", fg="blue").grid(row=1, column=2)
+    tkinter.Label(started_init_window, text="Initiatives", fg="blue").grid(row=1, column=3)
+
+    for i in range(len_paired_inits):
+        tkinter.Label(started_init_window, text="%s" % (paired_initiatives[i][0])).grid(row=i+2, column=2, sticky=tkinter.W)
+        tkinter.Label(started_init_window, text="%s" % (paired_initiatives[i][1])).grid(row=i+2, column=3)
+
+
+    tkinter.Button(started_init_window, text="Next", bg="green", fg="white", command=init_next_button_f).grid(row=len_paired_inits+3, column=3)
+
+    global make_green
+    make_green = 2
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    #for mm in range(len_paired_inits):
+
+    canvas1 = tkinter.Canvas(started_fight_window)
+    scroll_x = tkinter.Scrollbar(started_fight_window, orient="horizontal", command=canvas1.xview)
+
+    frame1 = tkinter.Frame(canvas1)
+    # group of widgets
+    for i in range(50):
+        tkinter.Label(frame1, text='label %i' % i).grid(row=1, column=i+1)
+
+    # this is where i should write the fuckin monsters and npcs that are in the fight
+
+
+    # put the frame in the canvas
+    canvas1.create_window(0, 0, anchor='sw', window=frame1)
+    # make sure everything is displayed before configuring the scrollregion
+    canvas1.update_idletasks()
+
+    canvas1.configure(scrollregion=canvas1.bbox('all'),
+                     xscrollcommand=scroll_x.set)
+
+    canvas1.pack(fill='both', expand=True, side='top')
+    scroll_x.pack(fill='x', side='bottom')
+
+
+
+
+
+
+
+
+
+def init_next_button_f():
+    global make_green
+    if make_green < len_paired_inits+2:
+        tkinter.Label(started_init_window, text="   -->  ", bg="green", fg="white").grid(row=make_green, column=1)
+        tkinter.Label(started_init_window, text=" " * 15).grid(row=make_green-1, column=1)
+        make_green = make_green + 1
+    else:
+        tkinter.Label(started_init_window, text=" " * 15).grid(row=make_green-1, column=1)
+        tkinter.Label(started_init_window, text="  -->  ", bg="green", fg="white").grid(row=2, column=1)
+        make_green = 3
+
+    print("make_green = "+str(make_green))
+
 
 
 
