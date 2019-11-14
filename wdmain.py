@@ -1233,31 +1233,74 @@ def start_the_fight():
 
     # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
 
-    #for mm in range(len_paired_inits):
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
 
-    canvas1 = tkinter.Canvas(started_fight_window)
-    scroll_x = tkinter.Scrollbar(started_fight_window, orient="horizontal", command=canvas1.xview)
+    #geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    #print("EZ A SELECT BUZISAG:\n")
+    #punci=[]
+    #for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    #print(punci)
 
-    frame1 = tkinter.Frame(canvas1)
+
+
     # group of widgets
-    for i in range(50):
-        tkinter.Label(frame1, text='label %i' % i).grid(row=1, column=i+1)
 
-    # this is where i should write the fuckin monsters and npcs that are in the fight
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
 
 
-    # put the frame in the canvas
-    canvas1.create_window(0, 0, anchor='sw', window=frame1)
-    # make sure everything is displayed before configuring the scrollregion
-    canvas1.update_idletasks()
 
-    canvas1.configure(scrollregion=canvas1.bbox('all'),
-                     xscrollcommand=scroll_x.set)
+    for many in range(len(fighting_monster_list)):
+        # first 10 stats..
+        for col in range(15):
+            tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col+1, column=((3*many)+1))
 
-    canvas1.pack(fill='both', expand=True, side='top')
-    scroll_x.pack(fill='x', side='bottom')
+        # first 10 stats values..
+        for dol in range(10):
+            tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+dol])).grid(row=dol+1, column=((3*many)+2))
+
+        # entry box for hit points
+        tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3*many)+3))
+
+        # skills and fill
+        geci = tkinter.Text(started_fight_window, width=20, height=10)
+        geci.grid(row=11, column=((3*many)+2))
+        geci.insert(tkinter.END, str(show_Monster[(many*15)+10]))
+
+        # actions and fill
+        geci1 = tkinter.Text(started_fight_window, width=20, height=10)
+        geci1.grid(row=12, column=((3 * many) + 2))
+        geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+        # CR, CT, Homebrew
+        for fol in range(3):
+            tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+(fol+12)])).grid(row=13+fol, column=((3*many)+2))
 
 
+        # ide kene meg akkor megcsinalni ugyan ezt csak az NPC-kkel.....
+        # fasz tudja hogy hogy kene a scrollingot megoldani.... fasz tudja....
 
 
 
