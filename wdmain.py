@@ -1199,21 +1199,84 @@ def initiative_start_f():
     initiative_window.destroy()
     generate_fight_win.destroy()
 
-    start_the_fight()
+    howMany_enemies = int(len(fighting_npc_list)+len(fighting_monster_list))
+
+    if howMany_enemies < 6:
+        start_the_fight()
+    elif howMany_enemies > 5 and howMany_enemies < 11:
+        start_the_fight6_10()
+        start_the_fight()
+    elif howMany_enemies > 10 and howMany_enemies < 16:
+        start_the_fight11_15()
+        start_the_fight6_10()
+        start_the_fight()
+    elif howMany_enemies > 15 and howMany_enemies < 21:
+        start_the_fight16_20()
+        start_the_fight11_15()
+        start_the_fight6_10()
+        start_the_fight()
+
+    elif howMany_enemies > 20 and howMany_enemies < 26:
+        start_the_fight21_25()
+        start_the_fight16_20()
+        start_the_fight11_15()
+        start_the_fight6_10()
+        start_the_fight()
+
+    elif howMany_enemies > 25 and howMany_enemies < 31:
+        pass
+        #start_the_fight26_30()
+        #start_the_fight21_25()
+        #start_the_fight16_20()
+        #start_the_fight11_15()
+        #start_the_fight6_10()
+        #start_the_fight()
+    elif howMany_enemies > 30 and howMany_enemies < 36:
+        # start_the_fight26_30()
+        # start_the_fight21_25()
+        # start_the_fight16_20()
+        # start_the_fight11_15()
+        # start_the_fight6_10()
+        # start_the_fight()
+        pass
+    elif howMany_enemies > 35 and howMany_enemies < 41:
+        # start_the_fight26_30()
+        # start_the_fight21_25()
+        # start_the_fight16_20()
+        # start_the_fight11_15()
+        # start_the_fight6_10()
+        # start_the_fight()
+        pass
+    elif howMany_enemies > 40 and howMany_enemies < 46:
+        # start_the_fight26_30()
+        # start_the_fight21_25()
+        # start_the_fight16_20()
+        # start_the_fight11_15()
+        # start_the_fight6_10()
+        # start_the_fight()
+        pass
+    elif howMany_enemies > 45 and howMany_enemies < 51:
+        # start_the_fight26_30()
+        # start_the_fight21_25()
+        # start_the_fight16_20()
+        # start_the_fight11_15()
+        # start_the_fight6_10()
+        # start_the_fight()
+        pass
 
 def start_the_fight():
     print("elkezdodott")
     global started_fight_window
     started_fight_window = tkinter.Tk()
-    started_fight_window.title("FIIIIIIIIGHTT!!!")
-    started_fight_window.geometry("1350x900+250+0")
+    started_fight_window.title("Monsters ---> 1-5")
+    started_fight_window.geometry("1670x470+250+0")
 
     # --------------------FOR THE INITIATIVE WINDOW----------------------
 
     global started_init_window
     started_init_window = tkinter.Tk()
     started_init_window.title("Initiative")
-    started_init_window.geometry("250x900+0+0")
+    started_init_window.geometry("250x1080+0+0")
 
 
     tkinter.Label(started_init_window, text=" " * 5).grid(row=2, column=1)
@@ -1271,36 +1334,1194 @@ def start_the_fight():
     print("show_Npc = " + str(show_Npc))
 
 
+    # case 1: if there's 5 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 5:
 
-    for many in range(len(fighting_monster_list)):
-        # first 10 stats..
-        for col in range(15):
-            tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col+1, column=((3*many)+1))
+        for many in range(len(fighting_monster_list)):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col+1, column=((3*many)+1))
 
-        # first 10 stats values..
-        for dol in range(10):
-            tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+dol])).grid(row=dol+1, column=((3*many)+2))
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+dol])).grid(row=dol+1, column=((3*many)+2))
 
-        # entry box for hit points
-        tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3*many)+3))
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3*many)+3))
 
-        # skills and fill
-        geci = tkinter.Text(started_fight_window, width=20, height=10)
-        geci.grid(row=11, column=((3*many)+2))
-        geci.insert(tkinter.END, str(show_Monster[(many*15)+10]))
+            # entry box for name (x)
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
 
-        # actions and fill
-        geci1 = tkinter.Text(started_fight_window, width=20, height=10)
-        geci1.grid(row=12, column=((3 * many) + 2))
-        geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3*many)+2))
+            geci.insert(tkinter.END, str(show_Monster[(many*15)+10]))
 
-        # CR, CT, Homebrew
-        for fol in range(3):
-            tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+(fol+12)])).grid(row=13+fol, column=((3*many)+2))
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3*many)+3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
 
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+(fol+12)])).grid(row=13+fol, column=((3*many)+2))
+
+    #case 2: if fighting monsters against us are more than 5
+    elif len(fighting_monster_list) > 5:
+
+        for many in range(5):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                            3 * many) + 2))
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
 
         # ide kene meg akkor megcsinalni ugyan ezt csak az NPC-kkel.....
         # fasz tudja hogy hogy kene a scrollingot megoldani.... fasz tudja....
+
+
+
+def start_the_fight6_10():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 6-10")
+    started_fight_window.geometry("1670x470+250+100")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 5 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 10:
+
+        for many in range(5, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 10
+    elif len(fighting_monster_list) > 10:
+
+        for many in range(5, 10):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+
+def start_the_fight11_15():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 11-15")
+    started_fight_window.geometry("1670x470+250+200")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 15:
+
+        for many in range(10, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                            3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 15:
+
+        for many in range(10, 15):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+
+
+def start_the_fight16_20():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 16-20")
+    started_fight_window.geometry("1670x470+250+300")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 20:
+
+        for many in range(15, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 20:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+
+def start_the_fight21_25():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 21-25")
+    started_fight_window.geometry("1670x470+250+400")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 25:
+
+        for many in range(20, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 25:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+def start_the_fight26_30():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 21-25")
+    started_fight_window.geometry("1670x470+250+400")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 25:
+
+        for many in range(20, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 25:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+def start_the_fight31_35():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 21-25")
+    started_fight_window.geometry("1670x470+250+400")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 25:
+
+        for many in range(20, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 25:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+def start_the_fight36_40():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 21-25")
+    started_fight_window.geometry("1670x470+250+400")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 25:
+
+        for many in range(20, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 25:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+def start_the_fight41_45():
+    print("elkezdodott")
+    global started_fight_window
+    started_fight_window = tkinter.Tk()
+    started_fight_window.title("Monsters ---> 21-25")
+    started_fight_window.geometry("1670x470+250+400")
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    # geci = c.execute('SELECT * FROM monsters WHERE name=?', fighting_monster_list[0])
+    # print("EZ A SELECT BUZISAG:\n")
+    # punci=[]
+    # for row in geci:
+    #    for pocs in range(len(row)):
+    #        punci.append(row[pocs])
+    # print(punci)
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(len(fighting_monster_list)):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', (fighting_monster_list[mm]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("show_Monster = " + str(show_Monster))
+
+    for nn in range(len(fighting_npc_list)):
+        get_Npc = c.execute('SELECT * FROM npc WHERE name=?', (fighting_npc_list[nn]))
+        for row in get_Npc:
+            for no in range(len(row)):
+                show_Npc.append(row[no])
+    print("show_Npc = " + str(show_Npc))
+
+    # case 1: if there's 15 or less monsters against us in the fight:
+    if len(fighting_monster_list) <= 25:
+
+        for many in range(20, (len(fighting_monster_list))):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                        3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(row=13 + fol, column=((3 * many) + 2))
+
+    # case 2: if fighting monsters against us are more than 15
+    elif len(fighting_monster_list) > 25:
+
+        for many in range(15, 20):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
+
+            # entry box for hit points
+            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+
+            # entry box for hit points
+            segg = tkinter.Entry(started_fight_window, width=5)
+            segg.insert(0, "(0)")
+            segg.grid(row=1, column=((3 * many) + 3))
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2))
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
