@@ -6,8 +6,9 @@ import sqlite3
 def main_win():
     main_window = tkinter.Tk()
     main_window.title('D&D Helping Tool')
-    main_window.geometry("500x500")
+    main_window.geometry("520x440")
     main_window.resizable(0, 0)
+    main_window.iconbitmap('icon.ico')
 
     welcome = tkinter.Label(main_window, text="Welcome to the D&D helper!")
     welcome.config(font=("Arial", 30))
@@ -31,6 +32,11 @@ def main_win():
 
     button3 = tkinter.Button(main_window, text="Generate Fight", height=5, width=25, command=generate_fight_window)
     button3.grid(row=7, column=1)
+
+    for i in range(10):
+        tkinter.Label(main_window, text=' '*10).grid(row=10+i, column=1, rowspan=5)
+    tkinter.Label(main_window, text='Version 1.1').grid(row=20, column=1, sticky=tkinter.E)
+
 
     main_window.mainloop()
 
@@ -246,6 +252,7 @@ def add_monster_win():
     add_monster_window.title("Add Monster")
     add_monster_window.geometry("700x800")
     add_monster_window.resizable(1, 1)
+    add_monster_window.iconbitmap('icon.ico')
 
     #add monster stats
     w2_txt1 = tkinter.Label(add_monster_window, text="Name:")
@@ -497,6 +504,7 @@ def gen_fight_char_button_f():
     global generate_fight_character
     generate_fight_character = tkinter.Tk()
     generate_fight_character.title("Add Character")
+    generate_fight_character.iconbitmap('icon.ico')
 
     gen_fight_char_top = tkinter.Label(generate_fight_character, text="Choose one of the following opportunities, than click -Add-")
     gen_fight_char_top.grid(row=1, column=1)
@@ -569,6 +577,7 @@ def gen_fight_monster_button_f():
     generate_fight_monster = tkinter.Tk()
     generate_fight_monster.title("Add monster to the fight")
     generate_fight_monster.geometry("1600x900")
+    generate_fight_monster.iconbitmap('icon.ico')
 
     gen_fight_monster_search = tkinter.Label(generate_fight_monster, text="Search for monsters!")
     gen_fight_monster_search.grid(row=1, column=1)
@@ -638,6 +647,7 @@ def gen_fight_search_name_button_f():
     search_mon_byname = tkinter.Tk()
     search_mon_byname.title("Search Monster by NAME")
     search_mon_byname.geometry("400x400")
+    search_mon_byname.iconbitmap('icon.ico')
 
     global searched_monsters_name
     searched_monsters_name = tkinter.Listbox(search_mon_byname, height=len(monsters_name_list))
@@ -687,6 +697,7 @@ def gen_fight_search_cr_button_f():
     search_mon_bycr = tkinter.Tk()
     search_mon_bycr.title("Search Monster by Challange Rating")
     search_mon_bycr.geometry("400x400")
+    search_mon_bycr.iconbitmap('icon.ico')
 
     global searched_monsters_cr
     searched_monsters_cr = tkinter.Listbox(search_mon_bycr, height=len(monsters_cr_list))
@@ -736,6 +747,7 @@ def gen_fight_search_ct_button_f():
     search_mon_byct = tkinter.Tk()
     search_mon_byct.title("Search Monster by Challange Rating")
     search_mon_byct.geometry("400x400")
+    search_mon_byct.iconbitmap('icon.ico')
 
     global searched_monsters_ct
     searched_monsters_ct = tkinter.Listbox(search_mon_byct, height=len(monsters_ct_list))
@@ -770,6 +782,7 @@ def gen_fight_npc_button_f():
     generate_fight_npc = tkinter.Tk()
     generate_fight_npc.title("Add NPC to the fight")
     generate_fight_npc.geometry("1600x900")
+    generate_fight_npc.iconbitmap('icon.ico')
 
     gen_fight_npc_search = tkinter.Label(generate_fight_npc, text="Search for NPC!")
     gen_fight_npc_search.grid(row=1, column=1)
@@ -839,6 +852,7 @@ def gen_fight_search_name_button_f_npc():
     search_npc_byname = tkinter.Tk()
     search_npc_byname.title("Search NPC by NAME")
     search_npc_byname.geometry("400x400")
+    search_npc_byname.iconbitmap('icon.ico')
 
     global searched_npc_name
     searched_npc_name = tkinter.Listbox(search_npc_byname, height=len(npc_name_list))
@@ -888,6 +902,7 @@ def gen_fight_search_cr_button_f_npc():
     search_npc_bycr = tkinter.Tk()
     search_npc_bycr.title("Search NPC by Challange Rating")
     search_npc_bycr.geometry("400x400")
+    search_npc_bycr.iconbitmap('icon.ico')
 
     global searched_npc_cr
     searched_npc_cr = tkinter.Listbox(search_npc_bycr, height=len(npc_cr_list))
@@ -937,6 +952,7 @@ def gen_fight_search_ct_button_f_npc():
     search_npc_byct = tkinter.Tk()
     search_npc_byct.title("Search NPC by Challange Rating")
     search_npc_byct.geometry("400x400")
+    search_npc_byct.iconbitmap('icon.ico')
 
     global searched_npc_ct
     searched_npc_ct = tkinter.Listbox(search_npc_byct, height=len(npc_ct_list))
@@ -1047,7 +1063,8 @@ def generate_fight_window():
     global generate_fight_win
     generate_fight_win = tkinter.Tk()
     generate_fight_win.title("Generate Fight")
-    generate_fight_win.geometry("1600x900")
+    generate_fight_win.geometry("1600x900+0+0")
+    generate_fight_win.iconbitmap('icon.ico')
     #generate_fight_win.attributes("-fullscreen", True)
     #generate_fight_win.attributes("-fullscreen", False)
 
@@ -1107,6 +1124,7 @@ def continute_to_initiative():
     initiative_window = tkinter.Tk()
     initiative_window.title("Giving Initiatives")
     initiative_window.geometry("300x900+500+0")
+    initiative_window.iconbitmap('icon.ico')
 
     #clearing
     for clear in range(2):
@@ -1188,12 +1206,194 @@ def continute_to_initiative():
 
 
 
+
+
+
+def start_the_fight6_10():
+    global started_fight_window6_10
+    started_fight_window6_10 = tkinter.Tk()
+    started_fight_window6_10.title("Monsters ---> 1-5")
+    started_fight_window6_10.geometry("1420x650+300+200")
+    started_fight_window6_10.iconbitmap('icon.ico')
+
+    # okay let's see:
+
+    # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
+
+    conn = sqlite3.connect('dnd.db')
+    c = conn.cursor()
+
+    duplicated_monsters = []
+    duplicated_monsters2 = []
+    for idontknow in real_fighting_monster_list:
+        if idontknow in duplicated_monsters:
+            duplicated_monsters2[duplicated_monsters.index(idontknow)][1] = \
+            duplicated_monsters2[duplicated_monsters.index(idontknow)][1] + 1
+            print('faszom')
+        else:
+            duplicated_monsters.append(idontknow)
+            duplicated_monsters2.append([idontknow, 1])
+
+    print('duplicated_monsters = ', duplicated_monsters)
+    print('duplicated_monsters2 = ', duplicated_monsters2)
+
+    print("duplicated_monsters2 lista len() fuggvenye: " + str(len(duplicated_monsters2)))
+
+    global fighting_monsters_len_count
+    global fighting_monsters_with_count
+    # ez itt nekem most kurvafontos !!! 2019.12.05. (december)
+    # ezek alapjan lehet megcsinalni majd a harc elkezdodott ablakot 'normalisan'
+    fighting_monsters_with_count = duplicated_monsters2
+    fighting_monsters_len_count = int(len(duplicated_monsters2))
+
+    print('fighting_monsters_with_count = {}\nfighting_monsters_len_count = {}'.format(fighting_monsters_with_count,
+                                                                                       fighting_monsters_len_count))
+
+    # group of widgets
+
+    db_column_names = ['Name: ', 'Armor Class: ', 'Hit Points: ', 'Speed: ',
+                       'Strength: ', 'Dexterity: ', 'Constitution: ', 'Intelligence: ',
+                       'Wisdom: ', 'Charisma: ', 'Skills: ', 'Actions: ',
+                       'Challange Rating: ', 'Creature Type: ', 'Homebrew: ']
+
+    show_Monster = []
+    show_Npc = []
+
+    for mm in range(fighting_monsters_len_count):
+        get_Monster = c.execute('SELECT * FROM monsters WHERE name=?', ([fighting_monsters_with_count[mm][0]]))
+        for row in get_Monster:
+            for mn in range(len(row)):
+                show_Monster.append(row[mn])
+    print("1 show_Monster = " + str(show_Monster))
+
+    # case 1: if there's 5 or less monsters against us in the fight:
+    if fighting_monsters_len_count <= 10:
+
+        for many in range(5, fighting_monsters_len_count):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window6_10, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1),
+                                                                                             sticky=tkinter.E)
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window6_10, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                            3 * many) + 2),
+                                                                                                        sticky=tkinter.W)
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window6_10, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2), sticky=tkinter.W)
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window6_10, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window6_10, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2), sticky=tkinter.W)
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window6_10, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window6_10, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2), sticky=tkinter.W)
+
+            # HP textboxes
+            tkinter.Label(started_fight_window6_10, text="HP").grid(row=16, column=((3 * many) + 1), sticky=tkinter.E)
+            hp_textwidget_monsters = tkinter.Text(started_fight_window6_10, width=8, height=10)
+            hp_textwidget_monsters.grid(row=16, column=((3 * many) + 2), sticky=tkinter.W)
+
+            hpsb = tkinter.Scrollbar(started_fight_window6_10, command=hp_textwidget_monsters.yview)
+            hpsb.grid(row=16, column=((3 * many) + 2), ipady=50)
+            hp_textwidget_monsters.config(yscrollcommand=hpsb.set)
+
+            for szexnevek in range(fighting_monsters_with_count[many][1]):
+                hp_textwidget_monsters.insert(tkinter.END,
+                                              ('%s: %s\n' % (szexnevek + 1, show_Monster[(many * 15) + 2])))
+
+
+    # case 2: if fighting monsters against us are more than 5
+    elif fighting_monsters_len_count > 10:
+
+        for many in range(5, 10):
+            # first 10 stats..
+            for col in range(15):
+                tkinter.Label(started_fight_window6_10, text="%s" % (db_column_names[col])).grid(row=col + 1,
+                                                                                             column=((3 * many) + 1),
+                                                                                             sticky=tkinter.E)
+
+            # first 10 stats values..
+            for dol in range(10):
+                tkinter.Label(started_fight_window6_10, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
+                                                                                                        column=((
+                                                                                                                            3 * many) + 2),
+                                                                                                        sticky=tkinter.W)
+
+            # skills and fill + scrollbar
+            geci = tkinter.Text(started_fight_window6_10, width=20, height=5)
+            geci.grid(row=11, column=((3 * many) + 2), sticky=tkinter.W)
+            geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
+
+            sb = tkinter.Scrollbar(started_fight_window6_10, command=geci.yview)
+            sb.grid(row=11, column=((3 * many) + 3), ipady=20)
+            geci.config(yscrollcommand=sb.set)
+
+            # actions and fill + scrollbar
+            geci1 = tkinter.Text(started_fight_window6_10, width=20, height=5)
+            geci1.grid(row=12, column=((3 * many) + 2), sticky=tkinter.W)
+            geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
+
+            sb1 = tkinter.Scrollbar(started_fight_window6_10, command=geci1.yview)
+            sb1.grid(row=12, column=((3 * many) + 3), ipady=20)
+            geci1.config(yscrollcommand=sb1.set)
+
+            # CR, CT, Homebrew
+            for fol in range(3):
+                tkinter.Label(started_fight_window6_10, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
+                    row=13 + fol, column=((3 * many) + 2), sticky=tkinter.W)
+
+            # HP textboxes
+            tkinter.Label(started_fight_window6_10, text="HP").grid(row=16, column=((3 * many) + 1), sticky=tkinter.E)
+            hp_textwidget_monsters = tkinter.Text(started_fight_window6_10, width=8, height=10)
+            hp_textwidget_monsters.grid(row=16, column=((3 * many) + 2), sticky=tkinter.W)
+
+            hpsb = tkinter.Scrollbar(started_fight_window6_10, command=hp_textwidget_monsters.yview)
+            hpsb.grid(row=16, column=((3 * many) + 2), ipady=50)
+            hp_textwidget_monsters.config(yscrollcommand=hpsb.set)
+
+            for szexnevek in range(fighting_monsters_with_count[many][1]):
+                hp_textwidget_monsters.insert(tkinter.END,
+                                              ('%s: %s\n' % (szexnevek + 1, show_Monster[(many * 15) + 2])))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def start_the_fight():
     print("elkezdodott")
     global started_fight_window
     started_fight_window = tkinter.Tk()
     started_fight_window.title("Monsters ---> 1-5")
-    started_fight_window.geometry("1500x650+300+0")
+    started_fight_window.geometry("1420x650+300+0")
+    started_fight_window.iconbitmap('icon.ico')
 
     # --------------------FOR THE INITIATIVE WINDOW----------------------
 
@@ -1201,6 +1401,7 @@ def start_the_fight():
     started_init_window = tkinter.Tk()
     started_init_window.title("Initiative")
     started_init_window.geometry("300x1080+0+0")
+    started_init_window.iconbitmap('icon.ico')
 
 
     tkinter.Label(started_init_window, text=" " * 5).grid(row=2, column=1)
@@ -1319,6 +1520,7 @@ def start_the_fight():
             for fol in range(3):
                 tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many*15)+(fol+12)])).grid(row=13+fol, column=((3*many)+2), sticky=tkinter.W)
 
+            # HP textboxes
             tkinter.Label(started_fight_window, text="HP").grid(row=16, column=((3*many)+1), sticky=tkinter.E)
             hp_textwidget_monsters = tkinter.Text(started_fight_window, width=8, height=10)
             hp_textwidget_monsters.grid(row=16, column=((3*many)+2), sticky=tkinter.W)
@@ -1332,30 +1534,24 @@ def start_the_fight():
 
 
     #case 2: if fighting monsters against us are more than 5
-    elif len(fighting_monster_list) > 5:
+    elif fighting_monsters_len_count > 5:
 
         for many in range(5):
             # first 10 stats..
             for col in range(15):
                 tkinter.Label(started_fight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
-                                                                                             column=((3 * many) + 1))
+                                                                                             column=((3 * many) + 1),
+                                                                                             sticky=tkinter.E)
 
             # first 10 stats values..
             for dol in range(10):
                 tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + dol])).grid(row=dol + 1,
-                                                                                                        column=((
-                                                                                                                            3 * many) + 2))
-            # entry box for hit points
-            segg = tkinter.Entry(started_fight_window, width=5)
-            segg.insert(0, "(0)")
-            segg.grid(row=1, column=((3 * many) + 3))
-
-            # entry box for hit points
-            tkinter.Entry(started_fight_window, width=5).grid(row=3, column=((3 * many) + 3))
+                                                                                                        column=((3 * many) + 2),
+                                                                                                        sticky=tkinter.W)
 
             # skills and fill + scrollbar
             geci = tkinter.Text(started_fight_window, width=20, height=5)
-            geci.grid(row=11, column=((3 * many) + 2))
+            geci.grid(row=11, column=((3 * many) + 2), sticky=tkinter.W)
             geci.insert(tkinter.END, str(show_Monster[(many * 15) + 10]))
 
             sb = tkinter.Scrollbar(started_fight_window, command=geci.yview)
@@ -1364,7 +1560,7 @@ def start_the_fight():
 
             # actions and fill + scrollbar
             geci1 = tkinter.Text(started_fight_window, width=20, height=5)
-            geci1.grid(row=12, column=((3 * many) + 2))
+            geci1.grid(row=12, column=((3 * many) + 2), sticky=tkinter.W)
             geci1.insert(tkinter.END, str(show_Monster[(many * 15) + 11]))
 
             sb1 = tkinter.Scrollbar(started_fight_window, command=geci1.yview)
@@ -1374,7 +1570,29 @@ def start_the_fight():
             # CR, CT, Homebrew
             for fol in range(3):
                 tkinter.Label(started_fight_window, text="%s" % (show_Monster[(many * 15) + (fol + 12)])).grid(
-                    row=13 + fol, column=((3 * many) + 2))
+                    row=13 + fol, column=((3 * many) + 2), sticky=tkinter.W)
+
+            # HP textboxes
+            tkinter.Label(started_fight_window, text="HP").grid(row=16, column=((3 * many) + 1), sticky=tkinter.E)
+            hp_textwidget_monsters = tkinter.Text(started_fight_window, width=8, height=10)
+            hp_textwidget_monsters.grid(row=16, column=((3 * many) + 2), sticky=tkinter.W)
+
+            hpsb = tkinter.Scrollbar(started_fight_window, command=hp_textwidget_monsters.yview)
+            hpsb.grid(row=16, column=((3 * many) + 2), ipady=50)
+            hp_textwidget_monsters.config(yscrollcommand=hpsb.set)
+
+            for szexnevek in range(fighting_monsters_with_count[many][1]):
+                hp_textwidget_monsters.insert(tkinter.END,
+                                              ('%s: %s\n' % (szexnevek + 1, show_Monster[(many * 15) + 2])))
+
+
+    # add a function window to the right:
+    global fight_function_window
+    fight_function_window = tkinter.Tk()
+    fight_function_window.title("Functions")
+    fight_function_window.geometry('190x1080+1720+0')
+    fight_function_window.iconbitmap('icon.ico')
+
 
 
 
@@ -1516,7 +1734,8 @@ def initiative_start_f():
     if fighting_monsters_len_count < 6:
         start_the_fight()
     elif fighting_monsters_len_count > 5 and fighting_monsters_len_count < 11:
-        pass
+        start_the_fight6_10()
+        start_the_fight()
     elif fighting_monsters_len_count > 10 and fighting_monsters_len_count < 16:
         pass
     elif fighting_monsters_len_count > 15 and fighting_monsters_len_count < 21:
@@ -1532,45 +1751,26 @@ def initiative_start_f():
 
 
 def end_fight():
-    started_fight_window.destroy()
-    started_init_window.destroy()
     try:
-        started_fight_window2.destroy()
+        started_fight_window.destroy()
     except:
         pass
     try:
-        started_fight_window3.destroy()
-    except:
-        pass
-    try:
-        started_fight_window4.destroy()
-    except:
-        pass
-    try:
-        started_fight_window5.destroy()
-    except:
-        pass
-    try:
-        started_fight_window6.destroy()
-    except:
-        pass
-    try:
-        started_fight_window7.destroy()
-    except:
-        pass
-    try:
-        started_fight_window8.destroy()
-    except:
-        pass
-    try:
-        started_fight_window9.destroy()
+        started_init_window.destroy()
     except:
         pass
     try:
         npc_infight_window.destroy()
     except:
         pass
-
+    try:
+        fight_function_window.destroy()
+    except:
+        pass
+    try:
+        started_fight_window6_10.destroy()
+    except:
+        pass
 
 
 
@@ -1579,7 +1779,8 @@ def npc_infight():
     global npc_infight_window
     npc_infight_window = tkinter.Tk()
     npc_infight_window.title("NPCs ---> 1-5")
-    npc_infight_window.geometry("1530x470+250+50")
+    npc_infight_window.geometry("1420x470+300+680")
+    npc_infight_window.iconbitmap('icon.ico')
 
 
     # --------------------FOR THE FIGHT WINDOW---------------------- started_fight_window
