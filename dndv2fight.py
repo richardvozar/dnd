@@ -1212,7 +1212,7 @@ def continute_to_initiative():
 def start_the_fight6_10():
     global started_fight_window6_10
     started_fight_window6_10 = tkinter.Tk()
-    started_fight_window6_10.title("Monsters ---> 1-5")
+    started_fight_window6_10.title("Monsters ---> 6-10")
     started_fight_window6_10.geometry("1420x650+300+200")
     started_fight_window6_10.iconbitmap('icon.ico')
 
@@ -1589,9 +1589,14 @@ def start_the_fight():
     # add a function window to the right:
     global fight_function_window
     fight_function_window = tkinter.Tk()
-    fight_function_window.title("Functions")
+    fight_function_window.title("Coming soon...")
     fight_function_window.geometry('190x1080+1720+0')
     fight_function_window.iconbitmap('icon.ico')
+    
+    tkinter.Label(fight_function_window, text='Coming soon...', height=20, width=50).pack()
+    tkinter.Button(fight_function_window, text='End Fight', bg='red', fg='white', command=end_fight, height=5, width=20).pack()
+
+
 
 
 
@@ -1734,14 +1739,14 @@ def initiative_start_f():
     if fighting_monsters_len_count < 6:
         start_the_fight()
     elif fighting_monsters_len_count > 5 and fighting_monsters_len_count < 11:
+        start_the_fight()
+        start_the_fight6_10()
+    else:
         start_the_fight6_10()
         start_the_fight()
-    elif fighting_monsters_len_count > 10 and fighting_monsters_len_count < 16:
-        pass
-    elif fighting_monsters_len_count > 15 and fighting_monsters_len_count < 21:
-        pass
 
-    if howMany_npcs < 6:
+
+    if howMany_npcs < 6 and howMany_npcs!=0:
         npc_infight()
 
 
