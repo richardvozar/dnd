@@ -6,7 +6,7 @@ import sqlite3
 def main_win():
     main_window = tkinter.Tk()
     main_window.title('D&D Helping Tool')
-    main_window.geometry("520x440")
+    main_window.geometry("520x520")
     main_window.resizable(0, 0)
     main_window.iconbitmap('icon.ico')
 
@@ -32,6 +32,11 @@ def main_win():
 
     button3 = tkinter.Button(main_window, text="Generate Fight", height=5, width=25, command=generate_fight_window)
     button3.grid(row=7, column=1)
+
+    button4 = tkinter.Button(main_window, text="Show/Modify Added", height=5, width=25, command=mainwindow_modify_added)
+    button4.grid(row=8, column=1)
+
+
 
     for i in range(10):
         tkinter.Label(main_window, text=' '*10).grid(row=10+i, column=1, rowspan=5)
@@ -1867,14 +1872,11 @@ def npc_infight():
         for many in range(5):
             # first 10 stats..
             for col in range(15):
-                tkinter.Label(npc_infight_window, text="%s" % (db_column_names[col])).grid(row=col + 1,
-                                                                                             column=((3 * many) + 1))
+                tkinter.Label(npc_infight_window, text="%s" % (db_column_names[col])).grid(row=col + 1, column=((3 * many) + 1))
 
             # first 10 stats values..
             for dol in range(10):
-                tkinter.Label(npc_infight_window, text="%s" % (show_Npc[(many * 15) + dol])).grid(row=dol + 1,
-                                                                                                        column=((
-                                                                                                                        3 * many) + 2))
+                tkinter.Label(npc_infight_window, text="%s" % (show_Npc[(many * 15) + dol])).grid(row=dol + 1, column=((3 * many) + 2))
             # entry box for hit points
             segg = tkinter.Entry(npc_infight_window, width=5)
             segg.insert(0, "(0)")
@@ -1942,8 +1944,140 @@ def init_next_button_f():
 
 
 
+def mainwindow_modify_added():
+    global window4
+    window4 = tkinter.Tk()
+    window4.title('Show / Modify added individuals')
+    window4.geometry('1200x800')
+    window4.iconbitmap('icon.ico')
+
+    def show_monsters():
+
+        def modify_monsters():
+
+            def button_modify_monster_function():
+                window = tkinter.Tk()
+                window.title('Modifying...')
+                window.geometry('300x300')
+                window.iconbitmap('icon.ico')
+                conn = sqlite3.connect('dnd.db')
+                c = conn.cursor()
+                active_monster_stat_var = listbox_modify_monsters.get(tkinter.ACTIVE)
+
+            active_monster_var = listbox_monsters.get(tkinter.ACTIVE)
+            fields = ['name', 'ac', 'hp', 'speed', 'str', 'dex',
+                      'con', 'int', 'wis', 'cha', 'skills', 'actions',
+                      'challange_rating', 'creature_type', 'homebrew']
+            tkinter.Label(window4, text='Modify %s' % (active_monster_var), fg='white', bg='blue').grid(row=5, column=1)
+            tkinter.Label(window4, text='Choose below which stat\nyou want to modify', fg='blue').grid(row=6, column=1)
+            global listbox_modify_monsters
+            listbox_modify_monsters = tkinter.Listbox(window4, width=20, height=15)
+            listbox_modify_monsters.grid(row=7, column=1)
+            for unit in fields:
+                listbox_modify_monsters.insert(tkinter.END, unit)
+            # modify button
+            button_modify_monster = tkinter.Button(window4, text='Modify', bg='green', fg='white', command=button_modify_monster_function)
+            button_modify_monster.grid(row=8, column=1)
 
 
+
+        def delete_monsters():
+            active_monster_var = listbox_monsters.get(tkinter.ACTIVE)
+            conn = sqlite3.connect('dnd.db')
+            c = conn.cursor()
+            c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+            conn.commit()
+            conn.close()
+            tkinter.Label(window4, text='Deleting %s was success.' % (active_monster_var), fg='red').grid(row=4, column=1)
+
+        global listbox_monsters
+        listbox_monsters = tkinter.Listbox(window4, width=33, height=20)
+        listbox_monsters.grid(row=2, column=1)
+        scrollbar_monsters = tkinter.Scrollbar(window4, orient=tkinter.VERTICAL)
+        scrollbar_monsters.grid(row=2, column=1, sticky=tkinter.E, ipady=135)
+        listbox_monsters.config(yscrollcommand=scrollbar_monsters.set)
+        scrollbar_monsters.config(command=listbox_monsters.yview)
+
+        # connect to database
+        conn = sqlite3.connect('dnd.db')
+        c = conn.cursor()
+        c.execute('SELECT name FROM monsters')
+        names = c.fetchall()
+        names_monsters = []
+        for unit in names:
+            names_monsters.append(unit)
+        for unit in names_monsters:
+            listbox_monsters.insert(tkinter.END, unit)
+
+
+
+
+
+
+        # delete or modify buttons
+        modify_monsters = tkinter.Button(window4, text="Modify", width=13, command=modify_monsters)
+        modify_monsters.grid(row=3, column=1, sticky=tkinter.W)
+
+        delete_monsters = tkinter.Button(window4, text="Delete", width=13, command=delete_monsters)
+        delete_monsters.grid(row=3, column=1, sticky=tkinter.E)
+
+    def show_npc():
+
+        def delete_npc():
+            active_npc_var = listbox_npc.get(tkinter.ACTIVE)
+            conn = sqlite3.connect('dnd.db')
+            c = conn.cursor()
+            c.execute('DELETE FROM npc WHERE name = ?', (active_npc_var))
+            conn.commit()
+            conn.close()
+            tkinter.Label(window4, text='Deleting %s was success.' % (active_npc_var), fg='red').grid(row=4, column=2)
+
+
+        global listbox_npc
+        listbox_npc = tkinter.Listbox(window4, width=33, height=20)
+        listbox_npc.grid(row=2, column=2)
+        scrollbar_npc = tkinter.Scrollbar(window4, orient=tkinter.VERTICAL)
+        scrollbar_npc.grid(row=2, column=2, sticky=tkinter.E, ipady=135)
+        listbox_npc.config(yscrollcommand=scrollbar_npc.set)
+        scrollbar_npc.config(command=listbox_npc.yview)
+
+        # connect to database
+        conn = sqlite3.connect('dnd.db')
+        c = conn.cursor()
+        c.execute('SELECT name FROM npc')
+        names = c.fetchall()
+        names_npc = []
+        for unit in names:
+            names_npc.append(unit)
+        for unit in names_npc:
+            listbox_npc.insert(tkinter.END, unit)
+
+        # modify or delete buttons
+        modify_npc = tkinter.Button(window4, text="Modify", width=13, command=None)
+        modify_npc.grid(row=3, column=2, sticky=tkinter.W)
+
+        delete_npc = tkinter.Button(window4, text="Delete", width=13, command=delete_npc)
+        delete_npc.grid(row=3, column=2, sticky=tkinter.E)
+
+
+    # MONSTER or NPC buttons
+    button_monster = tkinter.Button(window4, text='Show Monsters', width=26, command=show_monsters)
+    button_monster.grid(row=1, column=1)
+
+    button_npc = tkinter.Button(window4, text='Show NPC', width=26, command=show_npc)
+    button_npc.grid(row=1, column=2)
+
+
+
+
+
+
+
+
+
+    # save and close database
+    #conn.commit()
+    #conn.close()
 
 
 main_win()
