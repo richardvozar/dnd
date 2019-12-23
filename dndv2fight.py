@@ -1958,16 +1958,96 @@ def mainwindow_modify_added():
             def button_modify_monster_function():
                 window = tkinter.Tk()
                 window.title('Modifying...')
-                window.geometry('300x300')
+                window.geometry('500x400')
                 window.iconbitmap('icon.ico')
                 conn = sqlite3.connect('dnd.db')
                 c = conn.cursor()
                 active_monster_stat_var = listbox_modify_monsters.get(tkinter.ACTIVE)
 
+                tkinter.Label(window, text='Modify the %s of %s' % (active_monster_stat_var, active_monster_var)).grid(row=1, column=1)
+
+                def change_creature_type():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get(tkinter.ACTIVE)
+                    c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[13] = newValue
+                    c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                    c.execute("INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4],newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10],newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+
+                if active_monster_stat_var == 'creature_type':
+                    statValue = tkinter.Listbox(window, height=17)
+                    statValue.grid(row=2, column=1)
+                    for item in ["Aberration", "Animal", "Celestial", "Construct", "Dragon",
+                                 "Elemental", "Fey", "Fiend", "Giant", "Humanoid", "Magical Beast",
+                                 "Monstrous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"]:
+                        statValue.insert(tkinter.END, item)
+                    change_button = tkinter.Button(window, text='Change', command=change_creature_type)
+                    change_button.grid(row=3, column=1)
+
+
+
+                elif active_monster_stat_var == 'challenge_rating':
+                    statValue = tkinter.Scale(window, from_=1, to=30, tickinterval=1, orient=tkinter.HORIZONTAL, length=485)
+                    statValue.grid(row=2, column=1)
+                    c.execute('SELECT %s FROM monsters WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    statValue.set(defaultValue)
+                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button.grid(row=3, column=1)
+
+
+
+                elif active_monster_stat_var == 'homebrew':
+                    statValue = tkinter.Listbox(window, height=2)
+                    statValue.grid(row=2, column=1)
+                    statValue.insert(tkinter.END, 'Homebrew')
+                    statValue.insert(tkinter.END, 'Book')
+                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button.grid(row=3, column=1)
+
+
+                elif active_monster_stat_var == 'skills' or active_monster_stat_var == 'actions':
+                    statValue = tkinter.Text(window, height=20, width=62)
+                    statValue.grid(row=2, column=1, sticky=tkinter.E)
+                    c.execute('SELECT %s FROM monsters WHERE name = ?'%(active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    print('defaultValue = '+str(defaultValue))
+                    statValue.insert(1.0, defaultValue)
+                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button.grid(row=3, column=1)
+
+
+                else:
+                    statValue = tkinter.Entry(window)
+                    statValue.grid(row=2, column=1)
+                    c.execute('SELECT %s FROM monsters WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    statValue.insert(0, defaultValue)
+                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button.grid(row=3, column=1)
+
+
+
+
+
+                print("active_monster_stat_var = "+str(active_monster_stat_var))
+                print("active_monster_var = " + str(active_monster_var))
+
             active_monster_var = listbox_monsters.get(tkinter.ACTIVE)
+
             fields = ['name', 'ac', 'hp', 'speed', 'str', 'dex',
                       'con', 'int', 'wis', 'cha', 'skills', 'actions',
-                      'challange_rating', 'creature_type', 'homebrew']
+                      'challenge_rating', 'creature_type', 'homebrew']
             tkinter.Label(window4, text='Modify %s' % (active_monster_var), fg='white', bg='blue').grid(row=5, column=1)
             tkinter.Label(window4, text='Choose below which stat\nyou want to modify', fg='blue').grid(row=6, column=1)
             global listbox_modify_monsters
@@ -1976,7 +2056,7 @@ def mainwindow_modify_added():
             for unit in fields:
                 listbox_modify_monsters.insert(tkinter.END, unit)
             # modify button
-            button_modify_monster = tkinter.Button(window4, text='Modify', bg='green', fg='white', command=button_modify_monster_function)
+            button_modify_monster = tkinter.Button(window4, text='Modify', command=button_modify_monster_function, stat=tkinter.NORMAL)
             button_modify_monster.grid(row=8, column=1)
 
 
