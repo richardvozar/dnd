@@ -40,7 +40,7 @@ def main_win():
 
     for i in range(10):
         tkinter.Label(main_window, text=' '*10).grid(row=10+i, column=1, rowspan=5)
-    tkinter.Label(main_window, text='Version 1.1').grid(row=20, column=1, sticky=tkinter.E)
+    tkinter.Label(main_window, text='Version 1.2').grid(row=20, column=1, sticky=tkinter.E)
 
 
     main_window.mainloop()
@@ -1948,8 +1948,13 @@ def mainwindow_modify_added():
     global window4
     window4 = tkinter.Tk()
     window4.title('Show / Modify added individuals')
-    window4.geometry('1200x800')
+    window4.geometry('550x750')
     window4.iconbitmap('icon.ico')
+
+    def destroy_window4():
+        window4.destroy()
+    tkinter.Button(window4, text='Close', command=destroy_window4, width=20, activebackground='red', activeforeground='white').grid(row=1, column=3, rowspan=3, sticky=tkinter.N)
+
 
     def show_monsters():
 
@@ -1963,9 +1968,12 @@ def mainwindow_modify_added():
                 conn = sqlite3.connect('dnd.db')
                 c = conn.cursor()
                 active_monster_stat_var = listbox_modify_monsters.get(tkinter.ACTIVE)
-
                 tkinter.Label(window, text='Modify the %s of %s' % (active_monster_stat_var, active_monster_var)).grid(row=1, column=1)
+                def destroy_this():
+                    window.destroy()
+                tkinter.Button(window, text='Close', command=destroy_this).grid(row=3, column=1, sticky=tkinter.E)
 
+                # DEFINE ALL FUNCTIONS THAT WILL HAPPEN WHEN CLICK TO THE CHANGE BUTTONS
                 def change_creature_type():
                     conn = sqlite3.connect('dnd.db')
                     c = conn.cursor()
@@ -1982,6 +1990,114 @@ def mainwindow_modify_added():
                     conn.commit()
                     conn.close()
                     tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_challange_rating():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get()
+                    c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[12] = newValue
+                    c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                    c.execute("INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_homebrew():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get(tkinter.ACTIVE)
+                    c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[14] = newValue
+                    c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                    c.execute(
+                        "INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_skills_or_actions():
+                    if active_monster_stat_var == 'skills':
+                        conn = sqlite3.connect('dnd.db')
+                        c = conn.cursor()
+                        newValue = statValue.get('1.0', tkinter.END)
+                        c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                        newMonster = c.fetchall()
+                        newMonster = list(newMonster[0])
+                        newMonster[10] = newValue
+                        c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                        c.execute("INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                             newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                             newMonster[12], newMonster[13], newMonster[14]))
+                        conn.commit()
+                        conn.close()
+                        tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                    elif active_monster_stat_var == 'actions':
+                        conn = sqlite3.connect('dnd.db')
+                        c = conn.cursor()
+                        newValue = statValue.get('1.0', tkinter.END)
+                        c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                        newMonster = c.fetchall()
+                        newMonster = list(newMonster[0])
+                        newMonster[11] = newValue
+                        c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                        c.execute("INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                             newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                             newMonster[12], newMonster[13], newMonster[14]))
+                        conn.commit()
+                        conn.close()
+                        tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_firstTen_stat():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get()
+                    c.execute('SELECT * FROM monsters WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    if active_monster_stat_var == 'name':
+                        newMonster[0] = newValue
+                    elif active_monster_stat_var == 'ac':
+                        newMonster[1] = newValue
+                    elif active_monster_stat_var == 'hp':
+                        newMonster[2] = newValue
+                    elif active_monster_stat_var == 'speed':
+                        newMonster[3] = newValue
+                    elif active_monster_stat_var == 'str':
+                        newMonster[4] = newValue
+                    elif active_monster_stat_var == 'dex':
+                        newMonster[5] = newValue
+                    elif active_monster_stat_var == 'con':
+                        newMonster[6] = newValue
+                    elif active_monster_stat_var == 'int':
+                        newMonster[7] = newValue
+                    elif active_monster_stat_var == 'wis':
+                        newMonster[8] = newValue
+                    elif active_monster_stat_var == 'cha':
+                        newMonster[9] = newValue
+                    c.execute('DELETE FROM monsters WHERE name = ?', (active_monster_var))
+                    c.execute(
+                        "INSERT INTO monsters (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
 
 
                 if active_monster_stat_var == 'creature_type':
@@ -2002,7 +2118,7 @@ def mainwindow_modify_added():
                     c.execute('SELECT %s FROM monsters WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
                     defaultValue = c.fetchone()
                     statValue.set(defaultValue)
-                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button = tkinter.Button(window, text='Change', command=change_challange_rating)
                     change_button.grid(row=3, column=1)
 
 
@@ -2012,7 +2128,7 @@ def mainwindow_modify_added():
                     statValue.grid(row=2, column=1)
                     statValue.insert(tkinter.END, 'Homebrew')
                     statValue.insert(tkinter.END, 'Book')
-                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button = tkinter.Button(window, text='Change', command=change_homebrew)
                     change_button.grid(row=3, column=1)
 
 
@@ -2023,7 +2139,7 @@ def mainwindow_modify_added():
                     defaultValue = c.fetchone()
                     print('defaultValue = '+str(defaultValue))
                     statValue.insert(1.0, defaultValue)
-                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button = tkinter.Button(window, text='Change', command=change_skills_or_actions)
                     change_button.grid(row=3, column=1)
 
 
@@ -2033,7 +2149,7 @@ def mainwindow_modify_added():
                     c.execute('SELECT %s FROM monsters WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
                     defaultValue = c.fetchone()
                     statValue.insert(0, defaultValue)
-                    change_button = tkinter.Button(window, text='Change', command=None)
+                    change_button = tkinter.Button(window, text='Change', command=change_firstTen_stat)
                     change_button.grid(row=3, column=1)
 
 
@@ -2095,13 +2211,231 @@ def mainwindow_modify_added():
 
 
         # delete or modify buttons
-        modify_monsters = tkinter.Button(window4, text="Modify", width=13, command=modify_monsters)
-        modify_monsters.grid(row=3, column=1, sticky=tkinter.W)
+        modify_monsters_btn = tkinter.Button(window4, text="Modify", width=13, command=modify_monsters)
+        modify_monsters_btn.grid(row=3, column=1, sticky=tkinter.W)
 
         delete_monsters = tkinter.Button(window4, text="Delete", width=13, command=delete_monsters)
         delete_monsters.grid(row=3, column=1, sticky=tkinter.E)
 
     def show_npc():
+        def modify_npc():
+            def button_modify_monster_function():
+                window = tkinter.Tk()
+                window.title('Modifying...')
+                window.geometry('500x400')
+                window.iconbitmap('icon.ico')
+                conn = sqlite3.connect('dnd.db')
+                c = conn.cursor()
+                active_monster_stat_var = listbox_modify_monsters.get(tkinter.ACTIVE)
+                tkinter.Label(window, text='Modify the %s of %s' % (active_monster_stat_var, active_monster_var)).grid(row=1, column=1)
+                def destroy_this():
+                    window.destroy()
+                tkinter.Button(window, text='Close', command=destroy_this).grid(row=3, column=1, sticky=tkinter.E)
+
+                # DEFINE ALL FUNCTIONS THAT WILL HAPPEN WHEN CLICK TO THE CHANGE BUTTONS
+                def change_creature_type():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get(tkinter.ACTIVE)
+                    c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[13] = newValue
+                    c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                    c.execute("INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4],newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10],newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_challange_rating():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get()
+                    c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[12] = newValue
+                    c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                    c.execute("INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_homebrew():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get(tkinter.ACTIVE)
+                    c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    newMonster[14] = newValue
+                    c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                    c.execute(
+                        "INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_skills_or_actions():
+                    if active_monster_stat_var == 'skills':
+                        conn = sqlite3.connect('dnd.db')
+                        c = conn.cursor()
+                        newValue = statValue.get('1.0', tkinter.END)
+                        c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                        newMonster = c.fetchall()
+                        newMonster = list(newMonster[0])
+                        newMonster[10] = newValue
+                        c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                        c.execute("INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                             newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                             newMonster[12], newMonster[13], newMonster[14]))
+                        conn.commit()
+                        conn.close()
+                        tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                    elif active_monster_stat_var == 'actions':
+                        conn = sqlite3.connect('dnd.db')
+                        c = conn.cursor()
+                        newValue = statValue.get('1.0', tkinter.END)
+                        c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                        newMonster = c.fetchall()
+                        newMonster = list(newMonster[0])
+                        newMonster[11] = newValue
+                        c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                        c.execute("INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                            (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                             newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                             newMonster[12], newMonster[13], newMonster[14]))
+                        conn.commit()
+                        conn.close()
+                        tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+                def change_firstTen_stat():
+                    conn = sqlite3.connect('dnd.db')
+                    c = conn.cursor()
+                    newValue = statValue.get()
+                    c.execute('SELECT * FROM npc WHERE name=?', active_monster_var)
+                    newMonster = c.fetchall()
+                    newMonster = list(newMonster[0])
+                    if active_monster_stat_var == 'name':
+                        newMonster[0] = newValue
+                    elif active_monster_stat_var == 'ac':
+                        newMonster[1] = newValue
+                    elif active_monster_stat_var == 'hp':
+                        newMonster[2] = newValue
+                    elif active_monster_stat_var == 'speed':
+                        newMonster[3] = newValue
+                    elif active_monster_stat_var == 'str':
+                        newMonster[4] = newValue
+                    elif active_monster_stat_var == 'dex':
+                        newMonster[5] = newValue
+                    elif active_monster_stat_var == 'con':
+                        newMonster[6] = newValue
+                    elif active_monster_stat_var == 'int':
+                        newMonster[7] = newValue
+                    elif active_monster_stat_var == 'wis':
+                        newMonster[8] = newValue
+                    elif active_monster_stat_var == 'cha':
+                        newMonster[9] = newValue
+                    c.execute('DELETE FROM npc WHERE name = ?', (active_monster_var))
+                    c.execute(
+                        "INSERT INTO npc (name, ac, hp, speed, str, dex, con, int, wis, cha, skills, actions, challenge_rating, creature_type, homebrew) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        (newMonster[0], newMonster[1], newMonster[2], newMonster[3], newMonster[4], newMonster[5],
+                         newMonster[6], newMonster[7], newMonster[8], newMonster[9], newMonster[10], newMonster[11],
+                         newMonster[12], newMonster[13], newMonster[14]))
+                    conn.commit()
+                    conn.close()
+                    tkinter.Label(window, text='Changed!', fg='yellow', bg='lightblue').grid(row=4, column=1)
+
+
+
+                if active_monster_stat_var == 'creature_type':
+                    statValue = tkinter.Listbox(window, height=17)
+                    statValue.grid(row=2, column=1)
+                    for item in ["Aberration", "Animal", "Celestial", "Construct", "Dragon",
+                                 "Elemental", "Fey", "Fiend", "Giant", "Humanoid", "Magical Beast",
+                                 "Monstrous Humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"]:
+                        statValue.insert(tkinter.END, item)
+                    change_button = tkinter.Button(window, text='Change', command=change_creature_type)
+                    change_button.grid(row=3, column=1)
+
+
+
+                elif active_monster_stat_var == 'challenge_rating':
+                    statValue = tkinter.Scale(window, from_=1, to=30, tickinterval=1, orient=tkinter.HORIZONTAL, length=485)
+                    statValue.grid(row=2, column=1)
+                    c.execute('SELECT %s FROM npc WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    statValue.set(defaultValue)
+                    change_button = tkinter.Button(window, text='Change', command=change_challange_rating)
+                    change_button.grid(row=3, column=1)
+
+
+
+                elif active_monster_stat_var == 'homebrew':
+                    statValue = tkinter.Listbox(window, height=2)
+                    statValue.grid(row=2, column=1)
+                    statValue.insert(tkinter.END, 'Homebrew')
+                    statValue.insert(tkinter.END, 'Book')
+                    change_button = tkinter.Button(window, text='Change', command=change_homebrew)
+                    change_button.grid(row=3, column=1)
+
+
+                elif active_monster_stat_var == 'skills' or active_monster_stat_var == 'actions':
+                    statValue = tkinter.Text(window, height=20, width=62)
+                    statValue.grid(row=2, column=1, sticky=tkinter.E)
+                    c.execute('SELECT %s FROM npc WHERE name = ?'%(active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    print('defaultValue = '+str(defaultValue))
+                    statValue.insert(1.0, defaultValue)
+                    change_button = tkinter.Button(window, text='Change', command=change_skills_or_actions)
+                    change_button.grid(row=3, column=1)
+
+
+                else:
+                    statValue = tkinter.Entry(window)
+                    statValue.grid(row=2, column=1)
+                    c.execute('SELECT %s FROM npc WHERE name = ?' % (active_monster_stat_var), (active_monster_var))
+                    defaultValue = c.fetchone()
+                    if defaultValue != '':
+                        statValue.insert(0, defaultValue)
+                    else:
+                        pass
+                    change_button = tkinter.Button(window, text='Change', command=change_firstTen_stat)
+                    change_button.grid(row=3, column=1)
+
+
+
+
+
+                print("active_monster_stat_var = "+str(active_monster_stat_var))
+                print("active_monster_var = " + str(active_monster_var))
+
+            active_monster_var = listbox_npc.get(tkinter.ACTIVE)
+
+            fields = ['name', 'ac', 'hp', 'speed', 'str', 'dex',
+                      'con', 'int', 'wis', 'cha', 'skills', 'actions',
+                      'challenge_rating', 'creature_type', 'homebrew']
+            tkinter.Label(window4, text='Modify %s' % (active_monster_var), fg='white', bg='blue').grid(row=5, column=2)
+            tkinter.Label(window4, text='Choose below which stat\nyou want to modify', fg='blue').grid(row=6, column=2)
+            global listbox_modify_monsters
+            listbox_modify_monsters = tkinter.Listbox(window4, width=20, height=15)
+            listbox_modify_monsters.grid(row=7, column=2)
+            for unit in fields:
+                listbox_modify_monsters.insert(tkinter.END, unit)
+            # modify button
+            button_modify_monster = tkinter.Button(window4, text='Modify', command=button_modify_monster_function, stat=tkinter.NORMAL)
+            button_modify_monster.grid(row=8, column=2)
 
         def delete_npc():
             active_npc_var = listbox_npc.get(tkinter.ACTIVE)
@@ -2133,8 +2467,8 @@ def mainwindow_modify_added():
             listbox_npc.insert(tkinter.END, unit)
 
         # modify or delete buttons
-        modify_npc = tkinter.Button(window4, text="Modify", width=13, command=None)
-        modify_npc.grid(row=3, column=2, sticky=tkinter.W)
+        modify_npc_btn = tkinter.Button(window4, text="Modify", width=13, command=modify_npc)
+        modify_npc_btn.grid(row=3, column=2, sticky=tkinter.W)
 
         delete_npc = tkinter.Button(window4, text="Delete", width=13, command=delete_npc)
         delete_npc.grid(row=3, column=2, sticky=tkinter.E)
